@@ -91,13 +91,12 @@ double AreaOfPolygon(vector<Point> &V) {
 	return Area / 2.0;
 }
 
-inline bool Collinear(Point A, Point B, Point C) // O(1) 
-		{
+inline bool Collinear(Point A, Point B, Point C) { // O(1) 
 	return ((A - B) ^ (C - B)) == 0;
 }
 
-inline bool between(Point A, Point B, Point C) // A-B-C	O(1) 
-		{
+inline bool between(Point A, Point B, Point C) { // A-B-C	O(1) 
+		
 	// B lines in the segment AC
 	if (A == B || C == B)
 		return true;
@@ -145,8 +144,7 @@ pair<Point, int> lineIntersection(Point A1, Point B1, Point A2, Point B2) {
 	return pair<Point, int>(C, 0); // Normal Intersection
 }
 
-pair<Point, int> segmentIntersection(Point A1, Point B1, Point A2, Point B2,
-		bool seg = false) {
+pair<Point, int> segmentIntersection(Point A1, Point B1, Point A2, Point B2, bool seg = false) {
 
 // Intersection between two segments or two lines // ay + bx = c --> (x2-x1)y - (y2-y1)x = (x2-x1)y0-(y2-y1)x0
 	double a1 = A1.x - B1.x, b1 = -(A1.y - B1.y), c1 = a1 * A1.y + b1 * A1.x;
@@ -220,8 +218,7 @@ struct cmpYX {
 		return A.y != B.y ? A.y < B.y : A.x < B.x;
 	}
 };
-double ClosestPoint(vector<Point> &V) // LineSweep O(NlogN) 
-		{
+double ClosestPoint(vector<Point> &V) { // LineSweep O(NlogN) 
 	sort(V.begin(), V.end());
 	set<Point, cmpYX> S;
 	double D = 1e9;
