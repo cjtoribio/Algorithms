@@ -92,11 +92,12 @@ double AreaOfPolygon(vector<Point> &V) {
 }
 
 inline bool Collinear(Point A, Point B, Point C) { // O(1) 
+		
 	return ((A - B) ^ (C - B)) == 0;
 }
 
-inline bool between(Point A, Point B, Point C) { // A-B-C	O(1) 
-		
+inline bool between(Point A, Point B, Point C) {// A-B-C	O(1) 
+
 	// B lines in the segment AC
 	if (A == B || C == B)
 		return true;
@@ -218,7 +219,8 @@ struct cmpYX {
 		return A.y != B.y ? A.y < B.y : A.x < B.x;
 	}
 };
-double ClosestPoint(vector<Point> &V) { // LineSweep O(NlogN) 
+double ClosestPoint(vector<Point> &V) // LineSweep O(NlogN) 
+		{
 	sort(V.begin(), V.end());
 	set<Point, cmpYX> S;
 	double D = 1e9;
