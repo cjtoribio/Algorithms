@@ -74,10 +74,6 @@ struct BigInteger
 			if(i<B.V.size())ret.V[i] += B.V[i];
 		}
 		ret.adjust();
-		if(ret.V.back() >= FACTOR){
-			assert(false);
-			cout << "error on addition" << endl;
-		}
 		return ret;
 	}
 	BigInteger operator-(const BigInteger &B)const{
@@ -89,14 +85,7 @@ struct BigInteger
 			if(i < B.V.size())d -= B.V[i];
 			if(d < 0)d += FACTOR , c = 1;
 			else c = 0;
-			ret.V[i] = d;			
-			if(ret.V[i] < 0){
-				cout << V[i] << endl;
-				cout << B.V[i] << endl;
-				cout << FACTOR << endl;
-				cout << B.V.size() << " " << V.size() << " " << i << endl;
-				assert(false);
-			}
+			ret.V[i] = d;
 		}
 		ret.adjust();
 		return ret;
