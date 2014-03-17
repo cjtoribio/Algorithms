@@ -30,4 +30,16 @@ struct Printer
 		}
 		printf("}\n");
 	}
+	template<class ITERATOR>
+	static void print(ITERATOR begin, ITERATOR end)
+	{
+		printf("{\n");
+		while(begin != end)
+		{
+			print(*begin);
+			printf(", ");
+			begin++;
+		}
+		printf("}\n");
+	}
 };
