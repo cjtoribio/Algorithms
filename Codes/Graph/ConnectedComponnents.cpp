@@ -5,7 +5,7 @@ struct GraphCC
 	typedef pair<int,int> PII;
 	typedef vector<PII> VP;
 	VI vis, LOW, ID , AP;
-	VVI adj , SCC, BCC;
+	VVI adj , SCC, BCC , CC;
 	stack<int> S;
 	VP B;
 	int N;
@@ -26,6 +26,7 @@ struct GraphCC
 	VI getArticPoints()
 	{
 		B.clear(); AP.clear(); BCC.clear(); SCC.clear();
+		vis = vector<int>(N);
 		S = stack<int>();
 		for(int i = 0, IDX = 1; i < N; ++i , IDX = 1)
 			dfsArticPoint(i,-1,IDX);
@@ -35,6 +36,7 @@ struct GraphCC
 	VP getBridges()
 	{
 		B.clear(); AP.clear(); BCC.clear(); SCC.clear();
+		vis = vector<int>(N);
 		S = stack<int>();
 		for(int i = 0, IDX = 1; i < N; ++i , IDX = 1)
 			dfsArticPoint(i,-1,IDX);
@@ -44,6 +46,7 @@ struct GraphCC
 	VVI getBCC()
 	{
 		B.clear(); AP.clear(); BCC.clear(); SCC.clear();
+		vis = vector<int>(N);
 		S = stack<int>();
 		for(int i = 0, IDX = 1; i < N; ++i , IDX = 1)
 			dfsBCC(i,-1,IDX);
@@ -54,12 +57,24 @@ struct GraphCC
 	VVI getSCC()
 	{
 		B.clear(); AP.clear(); BCC.clear(); SCC.clear();
+		vis = vector<int>(N);
 		S = stack<int>();
 		for(int i = 0, IDX = 1; i < N; ++i , IDX = 1)
 			dfsSCC(i,IDX);
 		for(int i = 0; i < (int)SCC.size(); ++i)
 			sort(SCC[i].begin() , SCC[i].end());
 		return SCC;
+	}
+	VVI getCC()
+	{
+		CC.clear();
+		vis = vector<int>(N);
+		S = stack<int>();
+		for(int i = 0, IDX = 1; i < N; ++i , IDX = 1)
+			dfsCC(i,IDX);
+		for(int i = 0; i < (int)CC.size(); ++i)
+			sort(CC[i].begin() , CC[i].end());
+		return CC;
 	}
 private:
 	void dfsSCC(int u,int &IDX)
@@ -131,7 +146,6 @@ private:
 				if(LOW[v] >= ID[u])
 				{
 					BCC.push_back(VI());
-					cout << S.top() << endl;
 					while(S.top() != u)
 					{
 						BCC.back().push_back(S.top());
@@ -143,6 +157,27 @@ private:
 			else
 			{
 				LOW[u] = min(LOW[u] , ID[v]);
+			}
+		}
+	}
+	void dfsCC(int u, int &IDX)
+	{
+		if(vis[u])return;
+		ID[u] = IDX++;
+		vis[u] = 1;
+		S.push(u);
+		for(int i = 0; i < (int)adj[u].size(); ++i)
+		{
+			int v = adj[u][i];
+			dfsCC(v,IDX);
+		}
+		if(ID[u] == 1)
+		{
+			CC.push_back(VI());
+			while(!S.empty())
+			{
+				CC.back().push_back(S.top());
+				S.pop();
 			}
 		}
 	}
