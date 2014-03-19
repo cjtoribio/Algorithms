@@ -1,6 +1,6 @@
 struct LIS
 {
-	static vector<int> PrefixMatrix(const vector<int> &input)
+	static vector<int> PreviusNumberLIS(const vector<int> &input)
 	{
 		int N = input.size();
 		vector<int> KTH;
