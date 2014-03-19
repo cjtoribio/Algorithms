@@ -2,6 +2,7 @@ struct Partitions
 {
 	const static int MOD = 1000000007;
 	/**
+	 * It is known that MaxParts < SQRT(2*MaxSum) + 5 otherwise DP[MaxParts][MaxSum] = 0
 	 * parts from the theory of taking a PARTITION of size K parts with the
 	 * smallest partition of size X and then SUBTRACTING X from each partition
 	 * which is the same number of DP(PARTS-1 , SUM - X*PARTS)
