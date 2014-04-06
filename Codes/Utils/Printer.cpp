@@ -1,3 +1,8 @@
+#include <vector>
+#include <cstdio>
+#include <iostream>
+using namespace std;
+
 struct Printer
 {
 	template<class T>

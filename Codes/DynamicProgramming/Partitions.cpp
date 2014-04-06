@@ -1,3 +1,6 @@
+#include <vector>
+#include <iostream>
+using namespace std;
 struct Partitions
 {
 	const static int MOD = 1000000007;

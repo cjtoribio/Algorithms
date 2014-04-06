@@ -1,3 +1,6 @@
+#include <vector>
+#include <iostream>
+using namespace std;
 struct Factors
 {
 	static vector<int> factorize(int N)

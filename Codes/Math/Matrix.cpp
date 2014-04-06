@@ -1,3 +1,7 @@
+#include <vector>
+#include <iostream>
+#include <cstdio>
+using namespace std;
 struct Matrix
 {
 #define MOD 1000000007

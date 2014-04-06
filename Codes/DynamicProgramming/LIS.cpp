@@ -1,3 +1,7 @@
+#include <vector>
+#include <map>
+#include <iostream>
+using namespace std;
 struct LIS
 {
 	static vector<int> PreviusNumberLIS(const vector<int> &input)

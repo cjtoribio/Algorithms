@@ -102,19 +102,19 @@ struct SegmentTree
 	}
 };
 
-int main() {
-	int SZ = 10;
-	SegmentTree ST(SZ);
-	for(int i = 0; i < 10; ++i)
-	{
-		ST.update(i,i,(92384*i)%10);
-		cout << ST.query(5,8).val << endl;
-		for(int j = 0; j < SZ; ++j)
-			cout << ST.query(j,j).val << " ";
-		cout << endl;
-	}
-	return 0;
-}
+//int main() {
+//	int SZ = 10;
+//	SegmentTree ST(SZ);
+//	for(int i = 0; i < 10; ++i)
+//	{
+//		ST.update(i,i,(92384*i)%10);
+//		cout << ST.query(5,8).val << endl;
+//		for(int j = 0; j < SZ; ++j)
+//			cout << ST.query(j,j).val << " ";
+//		cout << endl;
+//	}
+//	return 0;
+//}
 
 
 

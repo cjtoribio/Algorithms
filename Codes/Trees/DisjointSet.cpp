@@ -1,3 +1,6 @@
+#include <vector>
+#include <iostream>
+using namespace std;
 struct DisjointSet
 {
 	vector<int> R , P;

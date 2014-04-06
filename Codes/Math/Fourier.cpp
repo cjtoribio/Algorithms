@@ -1,7 +1,12 @@
+#include <vector>
+#include <complex>
+
+using namespace std;
 struct Fourier
 {
 	typedef vector<complex<double> > VCD;
 	typedef complex<double> CD;
+	typedef long long Long;
 	 
 	#define MAXN 1000000
 	static void four1(double *data, Long nn) {
