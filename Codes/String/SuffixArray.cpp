@@ -88,18 +88,18 @@ void suffixArray(int* T, int* SA, int n, int K)
    }
    delete [] R; delete [] SA12; delete [] SA0; delete [] R0;
 }
-int main()
-{
-   char A[1000];
-   cin>>A;
-   int N = strlen(A);
-   int B[1000];
-   for(int i = 0; i < N; ++i)
-      B[i] = A[i];
-   int T[1000];
-   suffixArray(B,T,N,200);
-   for(int i = 0; i < N; ++i)
-   {
-      cout<<A+T[i]<<endl;
-   }
-}
+//int main()
+//{
+//   char A[1000];
+//   cin>>A;
+//   int N = strlen(A);
+//   int B[1000];
+//   for(int i = 0; i < N; ++i)
+//      B[i] = A[i];
+//   int T[1000];
+//   suffixArray(B,T,N,200);
+//   for(int i = 0; i < N; ++i)
+//   {
+//      cout<<A+T[i]<<endl;
+//   }
+//}

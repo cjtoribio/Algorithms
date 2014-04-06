@@ -2,6 +2,7 @@
 #include <cmath>
 #include <vector>
 #include <set>
+#include <algorithm>
 using namespace std;
 
 template<class INT> struct Poin {

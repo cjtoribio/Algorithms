@@ -1,3 +1,12 @@
+#include <cmath>
+#include <vector>
+#include <iostream>
+#include <queue>
+#include <stack>
+#include <algorithm>
+
+using namespace std;
+
 struct GraphCC
 {
 	typedef vector<int> VI;

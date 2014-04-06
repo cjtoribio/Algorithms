@@ -1,3 +1,8 @@
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
 struct StringUtils
 {
 	static string getRandString(int maxSize = 0)

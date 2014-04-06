@@ -1,3 +1,11 @@
+#include <vector>
+#include <string>
+#include <queue>
+#include <map>
+#include <cstdio>
+
+using namespace std;
+
 struct Node
 {
 	int parent , fail , output , letter, str , id;
