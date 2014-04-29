@@ -8,49 +8,37 @@ struct Polinomial
 	Polinomial(vector<double> V){
 		this->V = V;
 	}
-	Polinomial& set(int pos,int c)
-	{
-		V[pos] = c;
-		return *this;
-	}
 
 	int degree() const {
 		return int(V.size()) - 1;
+	}
+	double getC(int p) const {
+		return p >= int(V.size()) ? 0 : V[p];
 	}
 
 	Polinomial operator+(const Polinomial &P)const{
 		Polinomial ret(max(degree() , P.degree()));
 		for(int i = 0; i <= ret.degree(); ++i)
-		{
-			if(i < V.size())ret.V[i] += V[i];
-			if(i < P.V.size())ret.V[i] += P.V[i];
-		}
+			ret.V[i] = getC(i) + P.getC(i);
 		return ret;
 	}
 	Polinomial operator-(const Polinomial &P)const{
 		Polinomial ret(max(degree() , P.degree()));
 		for(int i = 0; i <= ret.degree(); ++i)
-		{
-			if(i < V.size())ret.V[i] += V[i];
-			if(i < P.V.size())ret.V[i] -= P.V[i];
-		}
+			ret.V[i] = getC(i) - P.getC(i);
 		return ret;
 	}
 
 	Polinomial derivate()const{
 		Polinomial ret(degree()-1);
 		for(int i = 0; i <= ret.degree(); ++i)
-		{
 			ret.V[i] = (i+1) * V[i+1];
-		}
 		return ret;
 	}
 	Polinomial integrate()const{
 		Polinomial ret(degree()+1);
 		for(int i = 1; i <= ret.degree(); ++i)
-		{
 			ret.V[i] = V[i-1] / i;
-		}
 		return ret;
 	}
 
@@ -58,10 +46,7 @@ struct Polinomial
 	{
 		double ret = 0;
 		for(int i = degree(); i >= 0; i--)
-		{
-			ret *= x;
-			ret += V[i];
-		}
+			ret = ret * x + V[i];
 		return ret;
 	}
 
