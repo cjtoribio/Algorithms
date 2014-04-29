@@ -45,6 +45,14 @@ struct Polinomial
 		}
 		return ret;
 	}
+	Polinomial integrate()const{
+		Polinomial ret(degree()+1);
+		for(int i = 1; i <= ret.degree(); ++i)
+		{
+			ret.V[i] = V[i-1] / i;
+		}
+		return ret;
+	}
 
 	double eval(double x)
 	{
@@ -60,30 +68,20 @@ struct Polinomial
 	vector<double> getZeros()
 	{
 		if(degree() == 0)return vector<double>();
-		vector<double> Z = this->derivate().getZeros();
-		Printer::print(V);
-		Printer::print(Z);
-		cout << endl;
+		Polinomial D = this->derivate();
+		vector<double> Z = D.getZeros();
 		vector<double> R;
 		for(int i = 0; i <= Z.size(); ++i)
 		{
 			double l = i == 0 ? -1e9 : Z[i-1];
 			double r = i == Z.size() ? 1e9 : Z[i];
-			l -= 1e-7;
-			r += 1e-7;
-			int positive = eval(l) < eval(r);
-			while( r-l > 1e-6 ){
-				double m = (l+r)/2;
-				double e = eval(m);
-				if((positive && e > 0) || (!positive && e < 0))
-					r = m;
-				else
-					l = m;
-
+			double x = (l + r) / 2;
+			for(int k = 0; k < 60; ++k){
+				x = x - eval(x) / D.eval(x);
 			}
-			double fe = eval((l+r)/2);
-			if( -1e-5 <= fe && fe <= 1e-5 )
-				R.push_back((l+r)/2);
+			double fe = eval(x);
+			if( -1e-6 <= fe && fe <= 1e-6 )
+				R.push_back(x);
 		}
 		sort(R.begin(),R.end());
 		vector<double> RET;
