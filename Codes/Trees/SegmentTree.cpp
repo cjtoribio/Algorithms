@@ -18,6 +18,7 @@ struct Node
 	{
 		this->val = val;
 		this->carry = 0;
+		this->sz = 1;
 		HasCarry = 0;
 	}
 	Node operator+(const Node &N)const {
