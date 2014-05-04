@@ -31,12 +31,12 @@ struct Math
 		// quotients   = t , s
 		return o_t;
 	}
-	static Long divide(Long a, Long b, Long mod)
+	static int MOD;
+	static Long divide(Long a, Long b)
 	{
-		return (((egcd(b,mod) % mod + mod) % mod) * a) % mod;
+		return (((egcd(b,MOD) % MOD + MOD) % MOD) * a) % MOD;
 	}
-	
-	static int ncr(int n,int k,int mod)
+	static int fact(int n)
 	{
 		static vector<int> F;
 		if(F.size() <= n)
@@ -45,9 +45,23 @@ struct Math
 			F.resize(n+1);
 			if(oSZ == 0)F[0] = 1 , oSZ++;
 			for(int i = oSZ; i <= n; ++i)
-				F[i] = (1LL * F[i-1] * i) % mod;
+				F[i] = (1LL * F[i-1] * i) % MOD;
 		}
+		return F[n];
+	}
+	static int ncr(int n,int k)
+	{
 		if(k < 0 || n < 0 || n < k)return 0;
-		return divide(F[n] , (1LL * F[k] * F[n-k]) % mod , mod);
+		return divide(fact(n) , (1LL * fact(k) * fact(n-k)) % MOD);
+	}
+	static int mul(int a,int b){
+		return (1LL*(a%MOD)*(b%MOD))%MOD;
+	}
+	static int  mul(int a,int b,int c){
+		return (1LL*mul(a,b)*(c%MOD))%MOD;
+	}
+	static int  mul(int a,int b,int c,int d){
+		return (1LL*mul(a,b)*mul(c,d))%MOD;
 	}
 };
+int Math::MOD = 1000000007;
