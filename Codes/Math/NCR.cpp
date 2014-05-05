@@ -49,6 +49,10 @@ struct Math
 		}
 		return F[n];
 	}
+	static int catalan(int n)
+	{
+		return divide(ncr(2*n,n), n+1);
+	}
 	static int ncr(int n,int k)
 	{
 		if(k < 0 || n < 0 || n < k)return 0;
