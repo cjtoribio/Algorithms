@@ -1,20 +1,3 @@
-// Implementation of min cost max flow algorithm using adjacency
-// matrix (Edmonds and Karp 1972).  This implementation keeps track of
-// forward and reverse edges separately (so you can set cap[i][j] !=
-// cap[j][i]).  For a regular max flow, set all edge costs to 0.
-//
-// Running time, O(|V|^2) cost per augmentation
-//     max flow:           O(|V|^3) augmentations
-//     min cost max flow:  O(|V|^4 * MAX_EDGE_COST) augmentations
-//     
-// INPUT: 
-//     - graph, constructed using AddEdge()
-//     - source
-//     - sink
-//
-// OUTPUT:
-//     - (maximum flow value, minimum cost value)
-//     - To obtain the actual flow, look at positive values only.
 // SOURCE:
 //	   - http://www.stanford.edu/~liszt90/acm/notebook.html#file2
 #include <cmath>
