@@ -128,3 +128,50 @@ struct BruteForceTree
 		cout << endl;
 	}
 };
+int main()
+{
+	LinkCutTree LT(10000); 
+	BruteForceTree BF(10000);
+	for(int i = 0; i < 200000; ++i)
+	{
+		int c = rand() % 4;
+		if(c == 0){
+			int u = rand() % 10 , v = rand() % 10 , c = rand() % 10 + 1;
+			LT.link(u,v,c);
+			BF.link(u,v,c);
+//			cout << "LINK " << u << " " << v << endl;
+		}
+		else if(c == 1){
+			int u = rand() % 10;
+			LT.cut(u);
+			BF.cut(u);
+//			cout << "CUT " << u << endl;
+		}
+		else if(c == 2){
+			int u = rand() % 10;
+			int a1 = LT.findRoot(u);
+			int a2 = BF.findRoot(u);
+			if(a1 != a2)
+			{
+				BF.print();
+				LT.print();
+				cout << "Answers: " << u << "   a1=" << a1 << "  " << "a2=" << a2 << endl;
+				cout << endl << endl << endl;
+			}
+		}
+		else
+		{
+			int u = rand() % 10;
+			int a1 = LT.findRoot(u);
+			int a2 = BF.findRoot(u);
+			if(a1 != a2)
+			{
+				BF.print();
+				LT.print();
+				cout << "Answers: " << u << "   a1=" << a1 << "  " << "a2=" << a2 << endl;
+				cout << endl << endl << endl;
+			}
+		}
+	}
+	cout << "OK" << endl;
+}
