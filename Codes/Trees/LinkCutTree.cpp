@@ -42,14 +42,16 @@ struct LinkCutTree
 			moveUp(v);
 	}
 	void expose(int v){ _expose(&V[v]); }
-	void _expose(Node *v){
-		for(Node *x = v, *y = NULL; x ; x = x->p){
+	Node* _expose(Node *v){
+		Node* last = NULL;
+		for(Node *x = v; x ; x = x->p){
 			splay(x);
-			x->r = y;
+			x->r = last;
 			x->update();
-			y = x;
+			last = x;
 		}
 		splay(v);
+		return last;
 	}
 	void link(int u,int v){ if(findRoot(u) != findRoot(v))_link(&V[u],&V[v]); }
 	void _link(Node *u,Node *v){
@@ -75,6 +77,13 @@ struct LinkCutTree
 			v = v->l;
 		splay(v);
 		return v;
+	}
+	int findLCA(int u,int v) { Node* lc = _findLCA(&V[u],&V[v]); return lc==NULL ? -1 : lc->id; }
+	Node* _findLCA(Node* u, Node* v)
+	{
+		if (_findRoot(u) != _findRoot(v))return NULL;
+		_expose(u);
+		return _expose(v);
 	}
 	void print(){
 		for(int i = 0; i < N; ++i)
