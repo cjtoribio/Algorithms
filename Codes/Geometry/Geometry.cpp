@@ -228,7 +228,7 @@ double ClosestPoint(vector<Point> &V) // LineSweep O(NlogN)
 	int tail = 0;
 	for (int i = 0; i < (int) V.size(); ++i) {
 		while (tail < i && (V[i].x - V[tail].x) > D)
-			tail++;
+			S.erase(V[tail++]);
 		set<Point, cmpYX>::iterator it1, it2;
 		it1 = S.lower_bound(Point(V[i].x, V[i].y - D));
 		it2 = S.upper_bound(Point(V[i].x, V[i].y + D));
@@ -394,8 +394,3 @@ Point ThirdPoint(Point A, Point B, double ac, double bc) {
 	}
 	return C;
 }
-
-
-
-
-
