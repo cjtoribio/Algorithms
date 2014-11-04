@@ -17,22 +17,23 @@ struct Node{
 	}
 };
 struct Group {
-	vector<Node> V;
+	Node *V;
+	int SIZE;
 	int sum, carry;
-	int size(){ return V.size(); }
+	int size(){ return SIZE; }
 	void create(vector<int> V){
-		this->V.reserve(V.size());
-		for(int i = 0; i < V.size(); ++i)
-			this->V.push_back(Node(V[i]));
+		this->V = new Node[SIZE = V.size()];
+		for(int i = 0; i < SIZE; ++i)
+			this->V[i] = Node(V[i]);
 	}
 	void pushDown(){
-		for(int i = 0; i < V.size(); ++i)
+		for(int i = 0; i < SIZE; ++i)
 			V[i].update(carry);
 		carry = 0;
 	}
 	void rebuild(){
 		sum = 0;
-		for(int i = 0; i < V.size(); ++i)
+		for(int i = 0; i < SIZE; ++i)
 			sum += V[i].val;
 	}
 	void update(int v){
@@ -58,10 +59,7 @@ struct SqrtOptimization
 		this->N = N;
 		int GCNT = N / GSIZE + (N % GSIZE != 0);
 		GS = vector<Group>(GCNT);
-		for (int i = 0; i < GCNT; ++i) {
-			int sz = i != GCNT-1 ? GSIZE : N - GCNT*(i);
-			GS[i].create(vector<int>(sz,0));
-		}
+		this->create(vector<int>(N,0));
 	}
 	void create(const vector<int> &V){
 		int GCNT = N / GSIZE + (N % GSIZE != 0);
@@ -71,48 +69,29 @@ struct SqrtOptimization
 		}
 	}
 	void update(int i,int j,int v){
-		int gi = i/GSIZE;
-		int gj = j/GSIZE;
-		if(i % GSIZE && gi != gj){
-			GS[gi].pushDown();
-			for(int g = i%GSIZE; g < GS[gi].size(); ++g){
-				GS[gi].update(g,v);
-			}
-			GS[gi].rebuild();
-			i = (gi+1)*GSIZE;
-		}
-		while(gi != gj){
-			GS[gi].update(v);
-			gi++;
-			i += GSIZE;
-		}
-		GS[gi].pushDown();
-		for(int g = i; g <= j; ++g){
-			GS[gi].update(g%GSIZE , v);
-		}
-		GS[gi].rebuild();
+		int gi = i/GSIZE , gj = j/GSIZE, pi = i % GSIZE, pj = j % GSIZE;
+		GS[gi].pushDown(); GS[gj].pushDown();
+		while(pi && pi < GSIZE && gi < gj)
+			GS[gi].update(pi++,v);
+		gi = i/GSIZE + (pi > 0 && gi < gj);
+		while(gi < gj) 
+			GS[gi++].update(v) , i = gi * GSIZE;
+		pi = i % GSIZE;
+		while(pi<= pj)  
+			GS[gi].update(pi++,v);
 	}
 	Node query(int i,int j){
-		int gi = i/GSIZE;
-		int gj = j/GSIZE;
-		vector<Node> TV;
-		TV.reserve(GSIZE);
-		int cnt = 0;
-		if(i % GSIZE && gi != gj){
-			GS[gi].pushDown();
-			for(int g = i%GSIZE; g < GS[gi].size(); ++g){
-				TV.push_back(GS[gi].query(g));
-			}
-		}
-		while(gi != gj){
-			TV.push_back(GS[gi].query());
-			gi++;
-			i += GSIZE;
-		}
-		GS[gi].pushDown();
-		for(int g = i%GSIZE; g <= j%GSIZE; ++g){
-			TV.push_back(GS[gi].query(g));
-		}
+		int gi = i/GSIZE , gj = j/GSIZE, pi = i % GSIZE, pj = j % GSIZE;
+		GS[gi].pushDown(); GS[gj].pushDown();
+		vector<Node> TV; TV.reserve(2*GSIZE);
+		while(pi && pi < GSIZE && gi < gj)
+			TV.push_back(GS[gi].query(pi++));
+		gi = i/GSIZE + (pi > 0 && gi < gj);
+		while(gi < gj) 
+			TV.push_back(GS[gi++].query()) , i = gi * GSIZE; 
+		pi = i % GSIZE;
+		while(pi<= pj)  
+			TV.push_back(GS[gi].query(pi++));
 		Node ret = TV[0];
 		for(int g = 1; g < TV.size(); ++g) ret = ret + TV[g];
 		return ret;
