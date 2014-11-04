@@ -53,14 +53,15 @@ struct Group {
 struct SqrtOptimization
 {
 #define GSIZE 1000
-	vector<Group> GS;
+	Group *GS;
 	int N;
 	SqrtOptimization(int N){
 		this->N = N;
 		int GCNT = N / GSIZE + (N % GSIZE != 0);
-		GS = vector<Group>(GCNT);
+		GS = new Group[GCNT];
 		this->create(vector<int>(N,0));
 	}
+	~SqrtOptimization(){ delete[] GS; }
 	void create(const vector<int> &V){
 		int GCNT = N / GSIZE + (N % GSIZE != 0);
 		for (int i = 0; i < GCNT; ++i) {
