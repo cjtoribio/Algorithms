@@ -20,6 +20,7 @@ struct Group {
 	Node *V;
 	int SIZE;
 	int sum, carry;
+	~Group(){ delete[] V; }
 	int size(){ return SIZE; }
 	void create(vector<int> V){
 		this->V = new Node[SIZE = V.size()];
@@ -76,7 +77,7 @@ struct SqrtOptimization
 			GS[gi].update(pi++,v) , i++;
 		gi = i/GSIZE;
 		while(gi < gj) 
-			GS[gi++].update(v) , i = gi * GSIZE;
+			GS[gi++].update(v) , i += GSIZE;
 		pi = i % GSIZE;
 		while(pi<= pj) 
 			GS[gi].update(pi++,v) , i++;
@@ -89,7 +90,7 @@ struct SqrtOptimization
 			TV.push_back(GS[gi].query(pi++)) , i++;
 		gi = i/GSIZE;
 		while(gi < gj) 
-			TV.push_back(GS[gi++].query()) , i = gi * GSIZE; 
+			TV.push_back(GS[gi++].query()) , i += GSIZE; 
 		pi = i % GSIZE;
 		while(pi<= pj)  
 			TV.push_back(GS[gi].query(pi++)) , i++;
