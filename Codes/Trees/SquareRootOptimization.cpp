@@ -79,7 +79,7 @@ struct SqrtOptimization
 			GS[gi++].update(v) , i = gi * GSIZE;
 		pi = i % GSIZE;
 		while(pi<= pj) 
-			GS[gi].update(pi++,v);
+			GS[gi].update(pi++,v) , i++;
 	}
 	Node query(int i,int j){
 		int gi = i/GSIZE , gj = j/GSIZE, pi = i % GSIZE, pj = j % GSIZE;
@@ -92,7 +92,7 @@ struct SqrtOptimization
 			TV.push_back(GS[gi++].query()) , i = gi * GSIZE; 
 		pi = i % GSIZE;
 		while(pi<= pj)  
-			TV.push_back(GS[gi].query(pi++));
+			TV.push_back(GS[gi].query(pi++)) , i++;
 		Node ret = TV[0];
 		for(int g = 1; g < TV.size(); ++g) ret = ret + TV[g];
 		return ret;
