@@ -28,6 +28,7 @@ struct Group {
 			this->V[i] = Node(V[i]);
 	}
 	void pushDown(){
+		
 		for(int i = 0; i < SIZE; ++i)
 			V[i].update(carry);
 		carry = 0;
@@ -45,7 +46,7 @@ struct Group {
 		V[i].update(v);
 	}
 	Node query(){
-		return sum;
+		return Node(sum);
 	}
 	Node query(int i){
 		return V[i];
@@ -75,12 +76,14 @@ struct SqrtOptimization
 		GS[gi].pushDown(); GS[gj].pushDown();
 		while(pi && pi < GSIZE && gi < gj)
 			GS[gi].update(pi++,v) , i++;
+		GS[gi].rebuild();
 		gi = i/GSIZE;
 		while(gi < gj) 
 			GS[gi++].update(v) , i += GSIZE;
 		pi = i % GSIZE;
 		while(pi<= pj) 
 			GS[gi].update(pi++,v) , i++;
+		GS[gj].rebuild();
 	}
 	Node query(int i,int j){
 		int gi = i/GSIZE , gj = j/GSIZE, pi = i % GSIZE, pj = j % GSIZE;
