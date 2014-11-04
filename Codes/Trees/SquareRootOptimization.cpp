@@ -13,13 +13,14 @@ struct Node{
 		val += v;
 	}
 	Node operator+(const Node &N){
-		return Node(val + N.val);
+		return Node(max(val,N.val));
 	}
 };
 struct Group {
 	Node *V;
 	int SIZE;
-	int sum, carry;
+	int ma, carry;
+	Group(){ carry = -1; }
 	~Group(){ delete[] V; }
 	int size(){ return SIZE; }
 	void create(vector<int> V){
@@ -28,25 +29,25 @@ struct Group {
 			this->V[i] = Node(V[i]);
 	}
 	void pushDown(){
-		
+		if(carry == -1)return;
 		for(int i = 0; i < SIZE; ++i)
 			V[i].update(carry);
-		carry = 0;
+		carry = -1;
 	}
 	void rebuild(){
-		sum = 0;
+		ma = 0;
 		for(int i = 0; i < SIZE; ++i)
-			sum += V[i].val;
+			ma = max(ma , V[i].val);
 	}
 	void update(int v){
-		sum += v;
-		carry += v;
+		ma = max(v , ma);
+		carry = v;
 	}
 	void update(int i, int v){
 		V[i].update(v);
 	}
 	Node query(){
-		return Node(sum);
+		return Node(ma);
 	}
 	Node query(int i){
 		return V[i];
@@ -110,13 +111,13 @@ int main(){
 		for(int j = 0; j < 50; ++j){
 			cout << S.query(j,j).val << " ";
 		}
-		cout << ": " << S.query(0,100).val << endl;
+		cout << ": " << S.query(10,99).val << endl;
 	}
 	for(int i = 9; i >= 0; --i){
 		S.update(0,i*5,-1);
 		for(int j = 0; j < 50; ++j){
 			cout << S.query(j,j).val << " ";
 		}
-		cout << ": " << S.query(0,100).val << endl;
+		cout << ": " << S.query(10,99).val << endl;
 	}
 }
