@@ -7,7 +7,7 @@ using namespace std;
 struct SortedSplayTree {
 	struct Node {
 		Node *p, *r, *l;
-		int sz,gid,rev;
+		int sz,gid;
 		int val;
 		Node(int v) {
 			static int IDX = 0;
@@ -25,8 +25,8 @@ struct SortedSplayTree {
 		inline int leftSize(){ return l ? l->sz : 0; }
 	};
 	Node* root;
-	int N;
 	SortedSplayTree(){ root = NULL; }
+	int size(){ return root == NULL ? 0 : root->sz; }
 	void moveUp(Node *v) {
 		if (!v->p)
 			return;
@@ -69,7 +69,7 @@ struct SortedSplayTree {
 				r = r->r;
 			}
 		}
-		splay(p);
+		if(p)splay(p);
 		return cnt;
 	}
 	void insert(int v){
@@ -84,6 +84,7 @@ struct SortedSplayTree {
 			else            r = r->r;
 		}
 		(p->val >= v  ? p->l : p->r) = nn;
+		nn->p = p;
 		splay(nn);
 	}
 	void print(Node* v, int LVL = 0){
