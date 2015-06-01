@@ -34,6 +34,9 @@ template<class INT> struct Poin {
 
 		return div ? Poin(x / H, y / H) : Poin(x * H, y * H);
 	}
+	Point operator*(const INT f)const{
+		return Point(x*f, y*f);
+	}
 	Poin unit() const {
 
 		return scale(mag(), 1);
@@ -49,7 +52,7 @@ template<class INT> struct Poin {
 typedef Poin<double> Point;
 
 Point incenter(Point A,Point B,Point C){
-	double a = B.distTo(C), b = A.distTo(C), c = A.distTo(B);
+	double a = (C-B).mag(), b = (C-A).mag(), c = (B-A).mag();
 	return (A*a + B*b + C*c) * (1/(a+b+c));
 }
 
