@@ -10,20 +10,36 @@
 #include <vector>
 using namespace std;
 
+struct NodeInit {
+	char c;
+	NodeInit(char c=' '){
+		this->c = c;
+	}
+};
 struct Node
 {
-	int val, carry , sz;
+	int op, io, cl, ic, carry , sz;
 	bool HasCarry;
-	Node(int val = 0)
-	{
-		this->val = val;
+	Node(){
+		this->carry = 0;
+		this->sz = 1;
+		HasCarry = 0;
+	}
+	Node(NodeInit n) {
+		this->op = n.c == '(';
+		this->cl = n.c == ')';
+		this->io = n.c == ')';
+		this->ic = n.c == '(';
 		this->carry = 0;
 		this->sz = 1;
 		HasCarry = 0;
 	}
 	Node operator+(const Node &N)const {
-		Node ret(val);
-		ret.val = max(val , N.val);
+		Node ret;
+		ret.op = N.op+max(0,op-N.cl); 
+		ret.cl = cl+max(0,N.cl-op);
+		ret.io = N.io+max(0,io-N.ic);
+		ret.ic = ic+max(0,N.ic-io);
 		ret.carry = 0;
 		ret.HasCarry = 0;
 		ret.sz = this->sz + N.sz;
@@ -31,8 +47,15 @@ struct Node
 	}
 	void update(int val)
 	{
-		this->carry += val;
-		this->val += val;
+		if(!val)return;
+		this->HasCarry = 1;
+		this->carry ^= 1;
+		swap(io,op);
+		swap(ic,cl);
+	}
+	void clear(){
+		this->HasCarry = 0;
+		this->carry = 0;
 	}
 };
 struct SegmentTree
@@ -45,7 +68,7 @@ struct SegmentTree
 		this->N = N;
 	}
 	~SegmentTree(){ delete [] this->V; }
-	void create(vector<Node> &VEC,int n = 1,int b = 0,int e = -1)
+	void create(vector<NodeInit> &VEC,int n = 1,int b = 0,int e = -1)
 	{
 		if(e == -1)e = N - 1;
 		if(b == e){
@@ -68,7 +91,7 @@ struct SegmentTree
 			{
 				V[2*n  ].update(V[n].carry);
 				V[2*n+1].update(V[n].carry);
-				V[n].HasCarry = 0;
+				V[n].clear();
 			}
 			int mid = (b+e)/2;
 			if(i > mid)return query(i,j,2*n+1,mid+1,e);
@@ -81,7 +104,6 @@ struct SegmentTree
 		if(e == -1)e = N - 1;
 		if(i <= b && e <= j)
 		{
-			V[n].HasCarry = 1;
 			V[n].update(v);
 		}
 		else if(i > e || j < b)
@@ -92,7 +114,7 @@ struct SegmentTree
 			{
 				V[2*n  ].update(V[n].carry);
 				V[2*n+1].update(V[n].carry);
-				V[n].HasCarry = 0;
+				V[n].clear();
 			}
 			int mid = (b+e)/2;
 			update(i,j,v,2*n,b,mid);
