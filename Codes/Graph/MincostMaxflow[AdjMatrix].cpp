@@ -1,5 +1,6 @@
 // SOURCE:
 //	   - http://www.stanford.edu/~liszt90/acm/notebook.html#file2
+//     - http://ideone.com/h1p9o4
 #include <cmath>
 #include <vector>
 #include <iostream>
