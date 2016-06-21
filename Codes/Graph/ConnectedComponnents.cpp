@@ -143,6 +143,7 @@ private:
 		if(vis[u])return;
 		vis[u] = 1;
 		S.push(u);
+//		cout << u << endl;
 		ID[u] = LOW[u] = IDX++;
 		for(int i = 0; i < (int)adj[u].size(); ++i)
 		{
@@ -155,12 +156,17 @@ private:
 				if(LOW[v] >= ID[u])
 				{
 					BCC.push_back(VI());
-					while(S.top() != u)
+//					cout << 1 << endl;
+					while(S.top() != v)
 					{
 						BCC.back().push_back(S.top());
 						S.pop();
 					}
+//					cout << 2 << endl;
+					S.pop();
+					BCC.back().push_back(v);
 					BCC.back().push_back(u);
+//					cout << u << " " << BCC.back().size()<< endl;
 				}
 			}
 			else
