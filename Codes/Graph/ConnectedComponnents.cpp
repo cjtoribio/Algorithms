@@ -7,6 +7,20 @@
 
 using namespace std;
 
+#include <iostream>
+#include <utility>
+#include <algorithm>
+#include <vector>
+#include <stack>
+#include <cassert>
+#include <cstring>
+#define DEBUG 0
+using namespace std;
+typedef long long Long;
+typedef pair<int,int> PII;
+typedef vector<int> VI;
+typedef vector<VI> VVI;
+
 struct GraphCC
 {
 	typedef vector<int> VI;
@@ -143,7 +157,6 @@ private:
 		if(vis[u])return;
 		vis[u] = 1;
 		S.push(u);
-//		cout << u << endl;
 		ID[u] = LOW[u] = IDX++;
 		for(int i = 0; i < (int)adj[u].size(); ++i)
 		{
@@ -156,17 +169,14 @@ private:
 				if(LOW[v] >= ID[u])
 				{
 					BCC.push_back(VI());
-//					cout << 1 << endl;
 					while(S.top() != v)
 					{
 						BCC.back().push_back(S.top());
 						S.pop();
 					}
-//					cout << 2 << endl;
 					S.pop();
 					BCC.back().push_back(v);
 					BCC.back().push_back(u);
-//					cout << u << " " << BCC.back().size()<< endl;
 				}
 			}
 			else
@@ -197,3 +207,105 @@ private:
 		}
 	}
 };
+
+
+int VIS[100010];
+int FN, FD;
+void dfs(int u,int d, VVI &adj, VI &GOOD){
+	VIS[u] = d;
+//	cout << "\t\t" << u << " "<< d << endl;
+	if(d > FD){
+		FN = u;
+		FD = d;
+	}
+	for(int i = 0; i < adj[u].size(); ++i){
+		int v = adj[u][i];
+		if(VIS[v] != -1)continue;
+		int nd = d;
+		if(!GOOD[v])nd++;
+		dfs(v, nd, adj, GOOD);
+	}
+}
+
+
+
+int main() {
+	
+	int N, M;
+	cin >> N >> M;
+	GraphCC G(N);
+	for (int i = 0; i < M; ++i) {
+		int u,v;
+		cin >> u >> v;
+		u--;v--;
+		G.addEdge(u,v);
+//		cout  << u << "-" << v << endl;
+	}
+//	cout << endl;
+	VVI BCC = G.getBCC();
+	for(int i = 0; i < N; ++i){
+//		cout << G.LOW[i] << endl;
+	}
+	int SC = 0;
+	vector<int> GOOD(N);
+	for(int i = 0; i < BCC.size(); ++i){
+		for(int j = 0; j < BCC[i].size(); ++j){
+			if(BCC[i].size() > 2){
+				GOOD[BCC[i][j]] = 1;
+			}
+//			cout << BCC[i][j] << " ";
+		}
+//		cout << endl;
+	}
+	VVI adj(N);
+	memset(VIS,-1,sizeof(VIS));
+	for(int i = 0; i < N; ++i){
+		if(!GOOD[i]){
+//			cout << i << endl;
+			FN = i;
+			FD = 0;
+			dfs(i,0,G.adj,GOOD);
+			break;
+		}
+	}
+	
+	FD = 0;
+	memset(VIS,-1,sizeof(VIS));
+	dfs(FN,0,G.adj,GOOD);
+		
+	for(int i = 0; i < N; ++i)
+		SC += GOOD[i];
+	cout << SC + (SC != N ? (FD + 1) : 0) << endl;
+	
+	return 0;
+}
+
+/*
+
+6 6
+1 2
+2 3
+3 4
+4 5
+5 2
+4 6
+
+5 5
+1 2
+2 3
+3 4
+4 5
+5 2
+
+6 6
+1 2
+2 3
+3 1
+1 4
+2 5
+3 6
+
+ */
+
+
+
