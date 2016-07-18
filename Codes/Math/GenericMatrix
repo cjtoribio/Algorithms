@@ -1,6 +1,14 @@
 template<class T>
 struct Matrix
 {
+	struct VirtualVector{
+		vector<T> &R;
+		int off;
+		VirtualVector(vector<T> &R, const int off):R(R),off(off){}
+		T& operator[](int k){
+			return R[off+k];
+		}
+	};
 	vector<T> MAT;
 	int N,M;
 	Matrix(int N,int M)
@@ -67,7 +75,9 @@ struct Matrix
 		}
 		return A;
 	}
-	T* operator[](int i){return &MAT[i*M];}
+	VirtualVector operator[](int i){
+		return VirtualVector(MAT, i*M);
+	}
 	int rows(){return N;}
 	int cols(){return M;}
 	string toString()
@@ -80,7 +90,7 @@ struct Matrix
 			{
 				char arr[30];
 				string app = (j==0?"":" ");
-				sprintf(arr,"%0.2llf",(*this)[i][j]);
+				sprintf(arr,"%d",(*this)[i][j]);
 				app += arr;
 				ans += app;
 			}
