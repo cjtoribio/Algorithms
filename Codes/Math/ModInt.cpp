@@ -50,5 +50,11 @@ struct ModInt {
 		}
 		return (*this) * ModInt(o_t);
 	}
+	ModInt<MOD> power(const ModInt<MOD-1> &B){
+		if(B.n == 0)return 1;
+		ModInt<MOD> sq = power(B.n/2);
+		sq = sq * sq;
+		if(B.n & 1)sq = sq * (*this);
+		return sq;
+	}
 };
-typedef ModInt<1000000007> mint;
