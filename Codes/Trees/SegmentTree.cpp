@@ -11,57 +11,24 @@
 using namespace std;
 
 
-struct MinVal
-{
-	struct Init {
-		int val, id;
-		Init(int val=0, int id=0){
-			this->val = val;
-			this->id  = id;
-		}
-	};
-	int mId, mV, carry , sz;
+struct SegmentNode{
+	int carry, sz;
 	bool HasCarry;
-	MinVal(){
-		this->mId = 0;
-		this->mV = 0;
+	SegmentNode(){
 		this->carry = 0;
 		this->sz = 1;
 		HasCarry = 0;
 	}
-	MinVal(Init n) {
-		mId = n.id;
-		mV  = n.val;
-		this->carry = 0;
-		this->sz = 1;
-		HasCarry = 0;
+	void join(const SegmentNode &l, const SegmentNode &r){
+		sz = l.sz + r.sz;
 	}
-	MinVal operator+(const MinVal &N)const {
-		MinVal ret;
-		if(mV <= N.mV){
-			ret.mV = mV;
-			ret.mId = mId;
-		}else{
-			ret.mV = N.mV;
-			ret.mId = N.mId;
-		}
-		ret.carry = 0;
-		ret.HasCarry = 0;
-		ret.sz = this->sz + N.sz;
-		return ret;
-	}
-	void update(int val)
-	{
-		this->HasCarry = 1;
-		this->carry += val;
-		this->mV += val;
+	void update(){
+		HasCarry = 1;
 	}
 	void clear(){
-		this->HasCarry = 0;
-		this->carry = 0;
+		HasCarry = 0;
 	}
 };
-
 template<class T>
 struct SegmentTree
 {
@@ -126,5 +93,32 @@ struct SegmentTree
 			V[n] = V[2*n] + V[2*n+1];
 		}
 
+	}
+};
+
+struct MinVal : SegmentNode 
+{
+	struct Init {
+		int val;
+		Init(int val=0):val(val){ }
+	};
+	int val;
+	MinVal() : SegmentNode(){
+		val = 0;
+	}
+	MinVal(Init n) : SegmentNode()  {
+		val = n.val;
+	}
+	MinVal operator+(const MinVal &N)const {
+		MinVal ret; ret.join( *this , N );
+		
+		ret.val = min(val, N.val);
+		
+		return ret;
+	}
+	void update(int val)
+	{	
+		SegmentNode::update();
+		sum = val;
 	}
 };
