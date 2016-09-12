@@ -71,17 +71,17 @@ Point circuncenter(Point A, Point B, Point C){
 }
 
 //
-Point Circle3Points(Point A, Point B, Point C) {
+Point Circle3Points(Point p0, Point p1, Point p2) {
 	//Find the Center of a Circle that has points A,B,C 
 	//The Circle3Points needs to be different else use Circle2Points
-	Point M1 = (A + B).scale(2, true);
-	double a1 = (A - B).y, b1 = (A - B).x, c1 = a1 * M1.y + b1 * M1.x;
-	Point M2 = (C + B).scale(2, true);
-	double a2 = (C - B).y, b2 = (C - B).x, c2 = a2 * M2.y + b2 * M2.x;
-	double det = a1 * b2 - b1 * a2;
-	double detY = c1 * b2 - b1 * c2; // <- Easy Bug here 
-	double detX = a1 * c2 - c1 * a2;
-	return Point(detX / det, detY / det);
+	Point A = p0 + (p1-p0)*0.5;
+	Point c = (p1-p0).rotate(M_PI/2).unit();
+
+	Point B = p1 + (p2-p1)*0.5;
+	Point d = (p2-p1).rotate(M_PI/2).unit();
+	
+	double t0 = ((d^B) - (d^A)) / (d^c);
+	return A + c*t0;
 }
 
 Point segIntercept(const Point A, const Point B, const Point C, const Point D){
