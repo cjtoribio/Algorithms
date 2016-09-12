@@ -84,6 +84,13 @@ Point Circle3Points(Point A, Point B, Point C) {
 	return Point(detX / det, detY / det);
 }
 
+Point segIntercept(const Point A, const Point B, const Point C, const Point D){
+	Point c = (B-A).unit();
+	Point d = (D-C).unit();
+	double t0 = ((d^C)-(d^A)) / (d^c);
+	return A + c*t0;
+}
+
 pair<Point, Point> Circle2Points(Point A, Point B, double R) {
 	//Find the Centers of the circles which touch A,B and have radius R 
 	Point M = (A + B).scale(2, true); // scale 2 for divide
