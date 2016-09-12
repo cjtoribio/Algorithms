@@ -41,6 +41,12 @@ template<class INT> struct Poin {
 
 		return scale(mag(), 1);
 	}
+	Point rotate(double a)const{
+		return Point(x*cos(a)-y*sin(a),x*sin(a)+y*cos(a));
+	}
+	Point rotate90(){
+		return Point(-y,x);
+	}
 	bool operator<(const Poin &P) const {
 
 		return x != P.x ? x < P.x : y < P.y;
@@ -75,10 +81,10 @@ Point Circle3Points(Point p0, Point p1, Point p2) {
 	//Find the Center of a Circle that has points A,B,C 
 	//The Circle3Points needs to be different else use Circle2Points
 	Point A = p0 + (p1-p0)*0.5;
-	Point c = (p1-p0).rotate(M_PI/2).unit();
+	Point c = (p1-p0).rotate90().unit();
 
 	Point B = p1 + (p2-p1)*0.5;
-	Point d = (p2-p1).rotate(M_PI/2).unit();
+	Point d = (p2-p1).rotate90().unit();
 	
 	double t0 = ((d^B) - (d^A)) / (d^c);
 	return A + c*t0;
