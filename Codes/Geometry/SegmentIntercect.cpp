@@ -6,7 +6,7 @@ a.x*n.y - a.y*n.x + t*(m^n) = 0
 t*(m^n) = n^a
 t = - ((a-c)^n) / (m^n)
  */
-Point segIntercept(const Point A, const Point B, const Point C, const Point D){
+Point segIntercept(const Point &A, const Point &B, const Point &C, const Point &D){
 	Point m = (B-A);
 	Point n = (D-C);
 	double t = - ((A-C)^n) / (m^n);
