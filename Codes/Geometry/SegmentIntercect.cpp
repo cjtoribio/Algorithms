@@ -12,3 +12,10 @@ Point segIntercept(const Point &A, const Point &B, const Point &C, const Point &
 	double t = - ((A-C)^n) / (m^n);
 	return A + m*t;
 }
+bool hasIntercept(const Point &A, const Point &B, const Point &C, const Point &D){
+	Point m = (B-A);
+	Point n = (D-C);
+	if(Point::similar(m^n, 0))return false; // parallel
+	double t = - ((A-C)^n) / (m^n);
+	return 0-1e9 <= t && t <= 1+1e9; // lies between
+}
