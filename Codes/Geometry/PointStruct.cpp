@@ -11,6 +11,12 @@ struct Point{
 	Point operator+(const Point &P)const{
 		return Point(x+P.x, y+P.y);
 	}
+	Double operator^(const Point &P){
+		return x*P.y - y*P.x;
+	}
+	Double operator*(const Point &P){
+		return x*P.x + y*P.y;
+	}
 	Double sqMag()const{
 		return x*x + y*y;
 	}
@@ -20,9 +26,6 @@ struct Point{
 	Point unit()const{
 		Double m = mag();
 		return Point(x/m,y/m);
-	}
-	Double operator^(const Point &P){
-		return x*P.y - y*P.x;
 	}
 	Point scale(const Double &d)const{
 		return Point(x*d,y*d);
