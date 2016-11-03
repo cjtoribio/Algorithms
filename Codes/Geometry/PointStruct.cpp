@@ -47,6 +47,11 @@ struct Point{
 		Double rey = abs(y-P.y)/max(1.0L,abs(P.y));
 		return rex < 1e-12 && rey < 1e-12;
 	}
+	Double angle()const{
+		Double an = atan2(y,x);
+		if(an < 0)an += 2*acos(-1);
+		return an;
+	}
 	static long long round(Double d){
 		if(d < 0)return (long long)(d-0.5);
 		return (long long)(d+0.5);
