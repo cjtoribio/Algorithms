@@ -9,8 +9,8 @@ t = - ((a-c)^n) / (m^n)
 Point segIntercept(const Point &A, const Point &B, const Point &C, const Point &D){
 	Point m = (B-A);
 	Point n = (D-C);
-	double t = - ((A-C)^n) / (m^n);
-	return A + m*t;
+	Double t = - ((A-C)^n) / (m^n);
+	return A + m.scale(t);
 }
 bool hasIntercept(const Point &A, const Point &B, const Point &C, const Point &D){
 	Point m = (B-A);
