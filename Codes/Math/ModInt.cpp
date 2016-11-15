@@ -1,29 +1,31 @@
 template<Long MOD> 
 struct ModInt {
-	Long n;
-	ModInt(Long n = 0){
-		this->n = n;
-		if(this->n < 0 || this->n >= MOD)this->n %= MOD;
-		if(this->n < 0)this->n = (this->n + MOD) % MOD;
+	int n;
+	ModInt(const ModInt<MOD> &v):n(v.n){ }
+	ModInt():n(0){}
+	ModInt(Long nn){
+		if(nn < -MOD || nn >= MOD)n %= MOD;
+		if(nn < 0)nn += MOD;
+		n = nn;
 	}
 	ModInt<MOD> operator+(const ModInt<MOD> &M)const{
-		ModInt r = (n + M.n);
-		if(r.n >= MOD)r.n -= MOD;
-		return r;
+		int r = (n + M.n);
+		if(r >= MOD)r -= MOD;
+		return ModInt::safe(r);
 	}
 	ModInt<MOD> operator-(const ModInt<MOD> &M)const{
-		ModInt<MOD> r = (n - M.n) % MOD;
-		if(r.n < 0)r.n += MOD;
-		return r;
+		int r = (n - M.n);
+		if(r < 0)r += MOD;
+		return ModInt::safe(r);
 	}
 	ModInt<MOD> operator*(const ModInt<MOD> &M)const{
-		return (1LL * n * M.n) % MOD;
+		return ModInt::safe(((Long)n * M.n) % MOD);
 	}
 	ModInt<MOD> operator+=(const ModInt<MOD> &M){
-		return this->n = ((*this)+(M)).n;
+		return ModInt::safe(n = ((*this)+(M)).n);
 	}
 	ModInt<MOD> operator-=(const ModInt<MOD> &M){
-		return this->n = ((*this)-(M)).n;
+		return ModInt::safe(n = ((*this)-(M)).n);
 	}
 	ModInt<MOD> operator/(const ModInt<MOD> &B)const
 	{
@@ -56,5 +58,10 @@ struct ModInt {
 		sq = sq * sq;
 		if(B.n & 1)sq = sq * (*this);
 		return sq;
+	}
+	inline static ModInt<MOD> safe(Long n){
+		ModInt<MOD> m;
+		m.n = n;
+		return m;
 	}
 };
