@@ -130,9 +130,9 @@ struct SuffixArray {
 		delete[] R0;
 	}
 	void BuildLCP() {
-		LCP = new int[N];
 		int *PLCP = new int[N];
 		int *PHI = new int[N];
+		LCP = new int[N];
 		PHI[SA[0]] = -1;
 		for (int i = 1; i < N; ++i)
 			PHI[SA[i]] = SA[i - 1];
@@ -163,10 +163,20 @@ struct SuffixArray {
 			for(int j = 0; j < N; ++j)
 				RLCP[j][i] = min( RLCP[j][i-1] , j<(1<<i)?0:RLCP[j-(1<<(i-1))][i-1] );
 		}
+		LOG2 = new int[N];
+		memset(LOG2, -1, sizeof(int) * N);
+		for(int i = 0; (1<<i) < N; ++i){
+			LOG2[1<<i] = i;
+		}
+		for(int i = 1; i < N; ++i){
+			if(LOG2[i] == -1){
+				LOG2[i] = LOG2[i-1];
+			}
+		}
 	}
 	int lcp(int i,int j){
 		if(i == j)return N - SA[i];
-		int l = floor( log2(j-i) );
+		int l = LOG2[j-i];
 		return min( RLCP[j][l] , RLCP[i+(1<<l)][l] );
 	}
 	int lower_bound(string &B) {
