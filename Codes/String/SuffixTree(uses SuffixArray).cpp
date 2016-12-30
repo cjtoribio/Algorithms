@@ -25,43 +25,34 @@ struct SuffixTree {
 			int st = SA.SA[i];
 			int en = SA.N-1;
 			Node* newNode = new Node(st, en);
-			if(i == 0){
-				act->child[ decode(S[st]) ] = newNode;
-				newNode->parent = act;
-				act = newNode;
-			}else{
-#define len(i) (N - i)
-				int skip = len(SA.SA[i-1]) - SA.LCP[i];
+			if(i > 0){
+				int skip = (N - SA.SA[i-1]) - SA.LCP[i];
 				newNode->st += SA.LCP[i];
 				while(skip > 0 && skip >= act->size()){
 					skip -= act->size();
 					act = act->parent;
 				}
-				if(skip == 0){
-					act->child[ decode(S[st]) ] = newNode;
-					newNode->parent = act;
-					act = newNode;
-				}else{
+				if(skip > 0){
 					int sp = act->size() - skip;
 					act = split(act, sp);
-
-					act->child[ decode(S[newNode->st]) ] = newNode;
-					newNode->parent = act;
-					act = newNode;
 				}
 			}
+			join(act, newNode);
+			act = newNode;
 		}
 	}
 	Node* split(Node *v , int sz){
 		int newEnd = v->st + sz - 1;
 		int newStart = newEnd + 1;
 		Node* newNode = new Node(v->st, newEnd);
-		newNode->parent = v->parent;
-		newNode->parent->child[ decode(S[newNode->st]) ] = newNode;
-		newNode->child[ decode(S[newStart]) ] = v;
 		v->st = newStart;
-		v->parent = newNode;
+		join(v->parent, newNode);
+		join(newNode, v);
 		return newNode;
+	}
+	void join(Node* parent, Node* child){
+		parent->child[ decode(S[child->st]) ] = child;
+		child->parent = parent;
 	}
 	void print(ostream &out){
 		print(out, root);
