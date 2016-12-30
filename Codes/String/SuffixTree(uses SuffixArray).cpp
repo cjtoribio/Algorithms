@@ -73,4 +73,5 @@ struct SuffixTree {
 				print(out, v->child[i], LVL+1);
 		}
 	}
+#undef decode
 };
