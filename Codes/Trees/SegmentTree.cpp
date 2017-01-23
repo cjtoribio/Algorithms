@@ -92,52 +92,21 @@ struct SegmentTree
 			update(i,j,v,2*n+1,mid+1,e);
 			V[n] = V[2*n] + V[2*n+1];
 		}
-
 	}
-};
-
-#define NONE 0
-#define OPEN 1
-#define CLOSE 2
-struct MinVal : SegmentNode 
-{
-	struct Init {
-		int val;
-		Init(int val=NONE):val(val){ }
-	};
-	int open, close;
-	int carry;
-	MinVal() : SegmentNode(){
-		open = 0;
-		close = 0;
-		carry = 0;
-	}
-	MinVal(Init n) : SegmentNode()  {
-		open = (n.val == OPEN);
-		close = (n.val == CLOSE);
-		carry = 0;
-	}
-	MinVal operator+(const MinVal &N)const {
-		MinVal ret; ret.join( *this , N );
-		
-		int cancel = min(open, N.close);
-		ret.open = open + N.open - cancel;
-		ret.close= close + N.close - cancel;
-		
-		return ret;
-	}
-	void update(int val)
-	{	
-		SegmentNode::update();
-		if(val == OPEN){
-			close = 0;
-			open = sz;
-		}else if(val == CLOSE){
-			close = sz;
-			open = 0;
-		}else{
-			open = 0;
-			close = 0;
+	int findLastIndex( bool (*isOk)(T) ){
+		int n = 1;
+		T acum;
+		acum.sz = 0;
+		while(V[n].sz > 1){
+			int l = 2*n , r = 2*n+1;
+			T newAcum = (acum.sz == 0 ? V[r] : (V[r] + acum));
+			if(isOk(newAcum)){
+				n = r;
+			}else{
+				acum = newAcum;
+				n = l;
+			}
 		}
+		return N - acum.sz - 1;
 	}
 };
