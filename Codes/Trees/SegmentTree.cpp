@@ -8,14 +8,14 @@
 
 #include <iostream>
 #include <vector>
+#include <cstdio>
 using namespace std;
 
 
 struct SegmentNode{
-	int carry, sz;
+	int sz;
 	bool HasCarry;
 	SegmentNode(){
-		this->carry = 0;
 		this->sz = 1;
 		HasCarry = 0;
 	}
@@ -32,11 +32,11 @@ struct SegmentNode{
 template<class T>
 struct SegmentTree
 {
-	vector<T> V;
+	T *V;
 	int N;
 	SegmentTree(int N)
 	{
-		this->V = vector<T>(4*N);
+		this->V = new T[4*N];
 		this->N = N;
 	}
 	void create(vector<typename T::Init> &VEC,int n = 1,int b = 0,int e = -1)
@@ -96,29 +96,48 @@ struct SegmentTree
 	}
 };
 
+#define NONE 0
+#define OPEN 1
+#define CLOSE 2
 struct MinVal : SegmentNode 
 {
 	struct Init {
 		int val;
-		Init(int val=0):val(val){ }
+		Init(int val=NONE):val(val){ }
 	};
-	int val;
+	int open, close;
+	int carry;
 	MinVal() : SegmentNode(){
-		val = 0;
+		open = 0;
+		close = 0;
+		carry = 0;
 	}
 	MinVal(Init n) : SegmentNode()  {
-		val = n.val;
+		open = (n.val == OPEN);
+		close = (n.val == CLOSE);
+		carry = 0;
 	}
 	MinVal operator+(const MinVal &N)const {
 		MinVal ret; ret.join( *this , N );
 		
-		ret.val = min(val, N.val);
+		int cancel = min(open, N.close);
+		ret.open = open + N.open - cancel;
+		ret.close= close + N.close - cancel;
 		
 		return ret;
 	}
 	void update(int val)
 	{	
 		SegmentNode::update();
-		sum = val;
+		if(val == OPEN){
+			close = 0;
+			open = sz;
+		}else if(val == CLOSE){
+			close = sz;
+			open = 0;
+		}else{
+			open = 0;
+			close = 0;
+		}
 	}
 };
