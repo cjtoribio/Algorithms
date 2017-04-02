@@ -4,7 +4,7 @@ struct ModInt {
 	ModInt(const ModInt<MOD> &v):n(v.n){ }
 	ModInt():n(0){}
 	ModInt(Long nn){
-		if(nn < -MOD || nn >= MOD)n %= MOD;
+		if(nn < -MOD || nn >= MOD)nn %= MOD;
 		if(nn < 0)nn += MOD;
 		n = nn;
 	}
