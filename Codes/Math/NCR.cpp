@@ -4,7 +4,6 @@ using namespace std;
 struct Math
 {
 	typedef long long Long;
-	// ax + by = c
 	static void assign(int &a, int &b, int c, int d){
 		a = c;
 		b = d;
@@ -13,6 +12,7 @@ struct Math
 		int x,y;
 		return egcd(a,b,x,y);
 	}
+	// ax + by = c
 	static int egcd(int a,int b, int &x, int &y) {
 		x = 1, y = 0;
 		int nx = 0, ny = 1;
