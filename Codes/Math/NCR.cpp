@@ -4,32 +4,29 @@ using namespace std;
 struct Math
 {
 	typedef long long Long;
-	static int egcd(int a,int b)
-	{
-		int r = a , o_r = b;
-		int s = 0 , o_s = 1;
-		int t = 1 , o_t = 0;
-		while(r != 0)
+	// ax + by = c
+	static void assign(int &a, int &b, int c, int d){
+		a = c;
+		b = d;
+	}
+	static int egcd(int a, int b){
+		int x,y;
+		return egcd(a,b,x,y);
+	}
+	static int egcd(int a,int b, int &x, int &y) {
+		x = 1, y = 0;
+		int nx = 0, ny = 1;
+		int nr = b, r = a;
+		while(nr != 0)
 		{
-			int q = o_r / r;
-			int tem;
-			
-			tem = r;
-			r = o_r - r * q;
-			o_r = tem;
-			
-			tem = o_s;
-			o_s = o_s - s * q;
-			o_s = tem;
-			
-			tem = t;
-			t = o_t - t * q;
-			o_t = tem;
+			int q = r / nr;
+			assign(r, nr, nr, r - q * nr);
+			assign(x, nx, nx, x - q * nx);
+			assign(y, ny, ny, y - q * ny);
 		}
-		// coeficients = o_t , o_s 
-		// gcd         = o_r
-		// quotients   = t , s
-		return o_t;
+		// bezout = x , y 
+		// gcd    = o_r
+		return r;
 	}
 	static int MOD;
 	static Long divide(Long a, Long b)
@@ -66,6 +63,21 @@ struct Math
 	}
 	static int  mul(int a,int b,int c,int d){
 		return (1LL*mul(a,b)*mul(c,d))%MOD;
+	}
+	static bool solveDiophantine(int a, int b, int c, int &x, int &y) {
+		int gc = egcd(a,b,x,y);
+		if(c % gc != 0)return false;
+		int d = c / gc;
+		x *= d;
+		y *= d;
+		return true;
+	}
+	static void moveBezout(int a,int b, int c, int &x, int &y, int pos = 1){
+		int gc = egcd(a,b);
+		b /= gc;
+		a /= gc;
+		x += b * pos;
+		y -= a * pos;
 	}
 };
 int Math::MOD = 1000000007;
