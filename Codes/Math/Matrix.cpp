@@ -61,10 +61,12 @@ struct Matrix
 	Matrix pow(long long n)
 	{
 		Matrix A = identity((*this).rows());
-		for(long long b = (1LL<<62); b >= 1; b>>=1)
+		long long hb = 1;
+		while(hb < n)hb <<= 1;
+		for(long long b = hb; b >= 1; b>>=1)
 		{
 			A = A * A;
-			if(b & n)A = A * (*this);
+			if (b & n) A = A * (*this);
 		}
 		return A;
 	}
