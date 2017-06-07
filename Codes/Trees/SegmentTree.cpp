@@ -39,7 +39,7 @@ struct SegmentTree
 		this->V = new T[4*N];
 		this->N = N;
 	}
-	void create(vector<typename T::Init> &VEC,int n = 1,int b = 0,int e = -1)
+	void create(const vector<typename T::Init> &VEC,int n = 1,int b = 0,int e = -1)
 	{
 		if(e == -1)e = N - 1;
 		if(b == e){
