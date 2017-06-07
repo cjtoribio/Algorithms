@@ -17,19 +17,19 @@ struct Matrix
 			A[i][i] = 1;
 		return A;
 	}
-	Matrix operator+(Matrix &M)
+	Matrix operator+(const Matrix &M)const
 	{
 		Matrix A(this->rows() , M.cols());
 		for(int i = 0; i < this->rows(); ++i)
 		{
 			for(int j = 0; j < this->cols(); ++j)
 			{
-				A[i][j] = (MAT[i][j] + M[i][j]) % MOD;
+				A[i][j] = (MAT[i][j] + M.MAT[i][j]) % MOD;
 			}
 		}
 		return A;
 	}
-	Matrix operator*(Matrix &M)
+	Matrix operator*(const Matrix &M)const
 	{
 		Matrix A(this->rows() , M.cols());
 		if(this->cols() != M.rows())return A;
@@ -40,7 +40,10 @@ struct Matrix
 				A[i][j] = 0;
 				for(int k = 0; k < this->cols(); ++k)
 				{
-					A[i][j] = (A[i][j] + 1LL*(*this)[i][k] * M[k][j]) % MOD;
+					Long m = 1LL*MAT[i][k] * M.MAT[k][j];
+					m %= MOD;
+					if(m < 0)m += MOD;
+					A[i][j] = (A[i][j] + m) % MOD;
 				}
 			}
 		}
@@ -58,6 +61,13 @@ struct Matrix
 		}
 		return A;
 	}
+	Matrix transponse()const{
+		Matrix r(cols(), rows());
+		for(int i = 0; i < rows(); ++i)
+			for(int j = 0; j < cols(); ++j)
+				r[j][i] = MAT[i][j];
+		return r;
+	}
 	Matrix pow(long long n)
 	{
 		Matrix A = identity((*this).rows());
@@ -71,8 +81,8 @@ struct Matrix
 		return A;
 	}
 	vector<int>& operator[](int i){return MAT[i];}
-	int rows(){return MAT.size();}
-	int cols(){return MAT[0].size();}
+	int rows()const{return MAT.size();}
+	int cols()const{return MAT[0].size();}
 	string toString()
 	{
 		string ans = "{\n";
