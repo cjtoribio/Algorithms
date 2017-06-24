@@ -42,8 +42,8 @@ namespace EducationalFFT {
 			Complex a = X[k];
 			Complex b = X[k + n/2];
 			/* sin(2*pi*s*i/n) */
-			Complex eb = E.get(k, n, inv) * b;//exp(Complex(0, ang)) * b;
-	//		long double d = abs(E.get(k, n, inv) * b - eb);
+			long double ang = -2*PI*k/n*inv;
+			Complex eb = exp(Complex(0, ang)) * b;
 			X[k] = a + eb ;
 			X[k+n/2] = a - eb;
 		}
