@@ -1,4 +1,3 @@
-
 template<typename T>
 struct Centroid {
 	struct Edge { int u, v; T data; };
@@ -34,11 +33,20 @@ struct Centroid {
 			}
 		}
 	}
-	void dfs(int blockLevel, int u, int p = -1, int depth = 0){
-		// custom DFS in each subtree
-		for(Edge &e : adj[u]){
-			if(e.v == p || L[e.v] < blockLevel)continue;
-			dfs(blockLevel, e.v, u, depth+1);
-		}
+	int lca(int u, int v){
+		while(L[u] > L[v])u = P[u];
+		while(L[v] > L[u])v = P[v];
+		while(u != v)u = P[u], v = P[v];
+		return u;
 	}
+	void dfs(int blockLevel, int u, int p = -1, int depth = 0, const T &data = T());
 };
+int U[18][50010];
+template<typename T>
+void Centroid<T>::dfs(int blockLevel, int u, int p, int depth, const T &d){
+	U[blockLevel][u] = d; // custom pre computed data in each subtree
+	for(Edge &e : adj[u]){
+		if(e.v == p || L[e.v] < blockLevel)continue;
+		dfs(blockLevel, e.v, u, depth+1, d + e.data);
+	}
+}
