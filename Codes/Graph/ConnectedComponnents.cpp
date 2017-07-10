@@ -116,7 +116,7 @@ private:
 		vis[u] = 1; // in S
 		int cnt = 0;
 		ID[u] = LOW[u] = IDX++;
-		bool isAP = true;
+		bool isAP = false;
 		for(int i = 0; i < (int)adj[u].size(); ++i)
 		{
 			int v = adj[u][i];
@@ -128,7 +128,7 @@ private:
 				LOW[u] = min(LOW[u] , LOW[v]);
 				if(LOW[v] > ID[u])
 					B.push_back(pair<int,int>(u,v));
-				isAP = isAP && (LOW[v] >= ID[u]);
+				isAP = isAP || (LOW[v] >= ID[u]);
 			}
 			else
 			{
