@@ -29,9 +29,14 @@ struct Math
 		return r;
 	}
 	static int MOD;
+	static Long modInv(Long a, Long b)
+	{
+		int x,y; egcd(a,b,x,y);
+		return x < 0 ? x + b : x;
+	}
 	static Long divide(Long a, Long b)
 	{
-		return (((egcd(b,MOD) % MOD + MOD) % MOD) * a) % MOD;
+		return a * modInv(b, MOD) % MOD;
 	}
 	static int fact(int n)
 	{
