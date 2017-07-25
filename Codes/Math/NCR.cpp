@@ -10,8 +10,7 @@ struct Math
 		x = 1, y = 0;
 		int nx = 0, ny = 1;
 		int nr = b, r = a;
-		while(nr != 0)
-		{
+		while(nr != 0) {
 			int q = r / nr;
 			tie(r, nr) = make_tuple(nr, r - q*nr);
 			tie(x, nx) = make_tuple(nx, x - q*nx);
