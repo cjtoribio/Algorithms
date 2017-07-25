@@ -13,14 +13,12 @@ struct Centroid {
 		int cent = -1, good = true;
 		for(Edge &e : adj[u]){ 
 			if(e.v == p || L[e.v] != -1)continue;
-			int t = getCentroid(e.v, u, sz, lvl);
-			if(cent == -1 && t != -1) cent = t;
+			cent = max(cent, getCentroid(e.v, u, sz, lvl));
 			SZ[u] += SZ[e.v];	
 			good &= SZ[e.v] <= sz / 2;
 		}
 		good &= sz - SZ[u] <= sz / 2;
-		if(good)cent = u;
-		return cent;
+		return good ? u : cent;
 	}
 	void computeCentroid(int root = 0, int prev = -1, int lvl = 0, int sz = -1){
 		if(sz == -1)sz = adj.size();
