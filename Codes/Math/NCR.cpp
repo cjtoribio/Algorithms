@@ -1,13 +1,6 @@
-#include <vector>
-#include <iostream>
-using namespace std;
 struct Math
 {
 	typedef long long Long;
-	static void assign(int &a, int &b, int c, int d){
-		a = c;
-		b = d;
-	}
 	static int egcd(int a, int b){
 		int x,y;
 		return egcd(a,b,x,y);
@@ -20,9 +13,9 @@ struct Math
 		while(nr != 0)
 		{
 			int q = r / nr;
-			assign(r, nr, nr, r - q * nr);
-			assign(x, nx, nx, x - q * nx);
-			assign(y, ny, ny, y - q * ny);
+			tie(r, nr) = make_tuple(nr, r - q*nr);
+			tie(x, nx) = make_tuple(nx, x - q*nx);
+			tie(y, ny) = make_tuple(ny, y - q*ny);
 		}
 		// bezout = x , y 
 		// gcd    = o_r
