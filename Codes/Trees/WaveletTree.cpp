@@ -42,5 +42,5 @@ struct WaveletTree {
 	/// countDistinct(i, j)
 	/// 	buildWavelet using array of next appearance: 
 	/// 	NEXT[i] = next position of element ARR[i] == ARR[i]
-	///  	then build WaveletTree(NEXT) and do "(j-i+1) - getFreq(i, j, i, j)" 
+	///  	then build WaveletTree(NEXT) and do "t.getFreq(i, j, j+1, t.hi)" 
 };
