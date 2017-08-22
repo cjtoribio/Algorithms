@@ -19,13 +19,10 @@ struct WaveletTree {
 	}
 	void getWithMore(int i, int j, int w, const function<void(int)> &emit){
 		if(j-i+1 < w)return;
-		if(lo == hi){
-			emit(lo);
-		}else{
-			int ai = (i?A[i-1]:0), aj = A[j];
-			l->getWithMore(  ai, aj-1, w, emit);
-			r->getWithMore(i-ai, j-aj, w, emit);
-		}
+		if(lo == hi) { emit(lo); return; }
+		int ai = (i?A[i-1]:0), aj = A[j];
+		l->getWithMore(  ai, aj-1, w, emit);
+		r->getWithMore(i-ai, j-aj, w, emit);
 	}
 	int getFreq(int i, int j, int a, int b) { // count elements from a to b
 		if(j < i)return 0;
