@@ -6,13 +6,23 @@ struct SAT2
 	VVI adj , radj;
 	VI vis , order, comp , sat;
 	SAT2(int N){
-		adj = VVI(2*N);
-		radj = VVI(2*N);
+		adj = VVI(2*(N+1));
+		radj = VVI(2*(N+1));
 	}
-	void addImplication(int i,int j,int neg)
+	void addImplication(int i,int j)
 	{
-		adj[2*i+(neg>>1)].push_back(2*j+(neg&1));
-		radj[2*j+(neg&1)].push_back(2*i+(neg>>1));
+		int si = i < 0 ? 1 : 0;
+		int sj = j < 0 ? 1 : 0;
+		i = abs(i); j = abs(j);
+		adj[2*i+si].push_back(2*j+sj);
+		radj[2*j+sj].push_back(2*i+si);
+	}
+	void addOr(int i, int j){
+		addImplication(-i, j);
+		addImplication(j, -i);
+	}
+	void setTrue(int i){
+		addImplication(-i, i);
 	}
 	void dfs1(int u)
 	{
