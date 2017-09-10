@@ -27,8 +27,8 @@ struct Fenwick2D {
 	}
 	int get(int x, int y){
 		int r = _get(x / BSIZE, y / BSIZE);
-		for(Update u : X[x / BSIZE]) r-= u.y/BSIZE <= y/BSIZE && u.x > x;
-		for(Update u : Y[y / BSIZE]) r-= u.x <= x && u.y > y;
+		for(Update u : X[x / BSIZE]) if(u.y/BSIZE <= y/BSIZE && u.x > x) r -= u.v;
+		for(Update u : Y[y / BSIZE]) if(u.x <= x && u.y > y) r -= u.v;
 		return r;
 	}
 	int _get(int x, int y){
