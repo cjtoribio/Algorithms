@@ -1,3 +1,4 @@
+// http://codeforces.com/blog/entry/13813?#comment-187855
 struct Fenwick2D {
 	struct Point { 
 		int x, y; 
