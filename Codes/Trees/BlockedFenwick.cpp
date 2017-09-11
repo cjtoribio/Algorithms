@@ -1,8 +1,8 @@
-
 /// This fenwick is used when N^2 is too big to fit in memory.
-/// The requirement is that in a RANGE of a coordinate [x, x+BLOCK] or [y, y+BLOCK]
-/// there should be few numbers. Since complexity is:
-/// 	((log(N/BSIZE)^2 + RANGE^2 * N/BSIZE)
+/// For efficiency it is required that point are never heavily-clustered in a block
+/// Complexity is: 
+/// 	Query: (MAX_CLUSTER + log(N/BSIZE)^2) 
+/// 	Update: log(N/BSIZE)^2
 struct Fenwick2D {
 	const int BSIZE = 200;
 	struct Update {
