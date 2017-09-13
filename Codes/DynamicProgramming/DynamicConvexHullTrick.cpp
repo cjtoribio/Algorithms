@@ -3,9 +3,6 @@ struct Line {
 	bool operator<(const Line &l)const{
 		return m != l.m ? m > l.m : b < l.b;
 	}
-	static Long worst(){
-		return 1000000000000000000LL;
-	}
 	static bool best(Long a, Long b){
 		return min(a, b);
 	}
@@ -30,7 +27,8 @@ struct ConvexHull {
 		}
 	}
 	Long getBest(Long x){
-		Long r = Line::worst();
+		bool hasValue = false;
+		Long r = 0;
 		for(vector<Line> row : lines){
 			if(row.size() == 0)continue;
 			int lo = 0, hi = row.size()-1, b = -1;
@@ -43,7 +41,9 @@ struct ConvexHull {
 					hi = mi-1;
 				}
 			}
-			r = Line::best(r, row[b].m * x + b);
+			if(!hasValue) r = row[b].m * x + row[b].b;
+			else     r = Line::best(r, row[b].m * x + row[b].b);
+			hasValue = 1;
 		}
 		return r;
 	}
