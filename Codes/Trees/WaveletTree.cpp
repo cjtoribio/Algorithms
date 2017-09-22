@@ -11,6 +11,7 @@ struct WaveletTree {
 	WaveletTree(IT b, IT e, int lo, int hi, int lvl = 0):lo(lo),hi(hi),l(NULL),r(NULL) {
 		int mi = (lo+hi)>>1;
 		function<int(int)> isLeft = [mi](int x) { return x <= mi; };
+		A.reserve(e - b);
 		for(IT i = b; i != e; ++i) 
 			A.push_back(isLeft(*i) + (i==b?0:A.back()));
 		IT ps = stable_partition(b, e, isLeft);
@@ -60,4 +61,5 @@ struct WaveletTree {
 		cout << endl;
 		if(r)r->print(lvl+1);
 	}
+#undef get
 };
