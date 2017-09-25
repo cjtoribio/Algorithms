@@ -71,4 +71,32 @@ struct SuffixArray {
 		int b = 31 - __builtin_clz(j-i);
 		return min(RLCP[b][j], RLCP[b][i+(1<<b)]);		
 	}
+	int cmp(int idx, const string &P){
+		for(int i = 0; i < P.size() && i + idx < N; ++i)
+			if(A[i+idx] != P[i])
+				return A[i+idx] < P[i] ? -1 : 1;
+		return N-idx < P.size() ? -1 : (N-idx == P.size() ? 0 : 1);
+	}
+	int lowerBound(const string &P){
+		int lo = 0, hi = N;
+		while(lo < hi){
+			int mid = (lo + hi)/2;
+			if(cmp(SA[mid], P) < 0)
+				lo = mid+1;
+			else
+				hi = mid;
+		}
+		return lo;
+	}
+	int upperBound(const string &P){
+		int lo = 0, hi = N;
+		while(lo < hi){
+			int mid = (lo + hi)/2;
+			if(cmp(SA[mid], P) <= 0)
+				lo = mid+1;
+			else
+				hi = mid;
+		}
+		return lo;
+	}
 };
