@@ -1,23 +1,24 @@
 typedef vector<int> VI;
 struct SuffixArray {
-	string A;
 	int N;
+	string A;
 	VI SA, RA, LCP;
 	SuffixArray(const string &B) :
-			SA(B.size()), RA(B.size()), LCP(B.size()), A(B), N(A.size()) {
+		N(B.size()), A(B), SA(B.size()), RA(B.size()), LCP(B.size())  {
 		for (int i = 0; i < N; ++i)
 			SA[i] = i, RA[i] = A[i];
 	}
 	void countingSort(int H) {
-		VI freq(max(N + 1, 300)), nSA(N);
-		auto vrank = [&](int i) {return SA[i]+H<N ? RA[SA[i]+H]+1 : 0;};
+		auto vrank = [&](int i) { return SA[i]+H<N ? RA[SA[i]+H]+1 : 0; };
+		int maxRank = *max_element(RA.begin(), RA.end());
+		VI freq(maxRank + 2), nSA(N);
 		for (int i = 0; i < N; ++i)
 			freq[vrank(i)]++;
 		for (int i = 0, sum = 0, t; i < freq.size(); ++i)
 			t = freq[i], freq[i] = sum, sum += t;
 		for (int i = 0, p, m; i < N; ++i)
 			nSA[freq[vrank(i)]++] = SA[i];
-		SA = nSA;
+		SA = move(nSA);
 	}
 	void BuildSA() {
 		for (int H = 1; H < N; H <<= 1) {
@@ -34,7 +35,7 @@ struct SuffixArray {
 					rank++;
 				nRA[SA[i]] = rank;
 			}
-			RA = nRA;
+			RA = move(nRA);
 		}
 	}
 	void BuildLCP() {
