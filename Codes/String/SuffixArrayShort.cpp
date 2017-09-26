@@ -74,8 +74,7 @@ struct SuffixArray {
 		radixPass(R, SA12, T.begin(), n02, K);
 		int name = 0, c0 = -1, c1 = -1, c2 = -1;
 		for (int i = 0; i < n02; i++) {
-			if (T[SA12[i]] != c0 || T[SA12[i] + 1] != c1
-					|| T[SA12[i] + 2] != c2) {
+			if (T[SA12[i]] != c0 || T[SA12[i] + 1] != c1 || T[SA12[i] + 2] != c2) {
 				name++;
 				c0 = T[SA12[i]];
 				c1 = T[SA12[i] + 1];
@@ -153,12 +152,22 @@ struct SuffixArray {
 		int b = 31 - __builtin_clz(j-i);
 		return min(RLCP[b][j], RLCP[b][i+(1<<b)]);		
 	}
-	int cmp(int idx, const string &P){
-		for(int i = 0; i < P.size() && i + idx < N; ++i)
+	long long ops = 0;
+	int match(int idx, const string &P){
+		for(int i = 0; i < P.size() && i + idx < N; ++i){
+			ops++;
 			if(A[i+idx] != P[i])
-				return A[i+idx] < P[i] ? -1 : 1;
-		return N-idx < P.size() ? -1 : (N-idx == P.size() ? 0 : 1);
+				return i;
+		}
+		return min(N-idx, (int)P.size());
 	}
+	int cmp(int idx, const string &P){
+		int m = match(idx, P);
+		if(m == P.size())return 0;
+		if(m == N-idx)return -1;
+		return A[idx+m] < P[m] ? -1 : (A[idx+m] == P[m] ? 0 : 1);
+	}
+	// MlogN (low constant)
 	int lowerBound(const string &P){
 		int lo = 0, hi = N;
 		while(lo < hi){
@@ -170,6 +179,7 @@ struct SuffixArray {
 		}
 		return lo;
 	}
+	// MlogN (low constant)
 	int upperBound(const string &P){
 		int lo = 0, hi = N;
 		while(lo < hi){
@@ -178,6 +188,35 @@ struct SuffixArray {
 				lo = mid+1;
 			else
 				hi = mid;
+		}
+		return lo;
+	}
+	// M + logN (high constant)
+	int lowerBound2(const string &P, int deb = 0){
+		int lo = 0, hi = N;
+		int k = match(SA[0], P), pm = 0;
+		while(lo < hi){
+			int m = (lo + hi)/2;
+			int rlcp= lcp(min(pm,m), max(m,pm));
+			if(rlcp > k && pm != m){
+				if(pm < m)lo = m+1;
+				else hi = m;
+			}else if(rlcp < k && pm != m){
+				if(pm < m)hi = m;
+				else lo = m+1;
+			}else{
+				while(k < P.size() && SA[m]+k < N && P[k] == A[SA[m]+k])
+					k++;
+				if(k == P.size())
+					hi = m;
+				else if(SA[m]+k == N)
+					lo = m+1;
+				else if(A[SA[m]+k] < P[k])
+					lo = m+1;
+				else 
+					hi = m;
+				pm = m;
+			}
 		}
 		return lo;
 	}
