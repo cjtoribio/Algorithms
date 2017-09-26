@@ -39,11 +39,9 @@ struct SuffixArray {
 		}
 	}
 	void BuildSA2(){
-		int *T = new int[N+3];
-		int *SA= new int[N+3];
+		VI T(N+3), SA(N+3);
 		for(int i = 0; i < A.size(); ++i)
 			T[i] = A[i];
-		T[N] = T[N+1] = T[N+2] = 0;
 		suffixArray(T, SA, N, 256);
 		for(int i = 0; i < N; ++i)
 			RA[ SA[i] ] = i;
@@ -56,33 +54,24 @@ struct SuffixArray {
 	inline bool leq(int a1, int a2, int a3, int b1, int b2, int b3) {
 		return (a1 < b1 || (a1 == b1 && leq(a2, a3, b2, b3)));
 	}
-	static void radixPass(int* a, int* b, int* r, int n, int K) {
-		int* c = new int[K + 1]; 
-		for (int i = 0; i <= K; i++)
-			c[i] = 0;  
-		for (int i = 0; i < n; i++){
+	static void radixPass(VI &a, VI &b, VI::iterator r, int n, int K) {
+		VI c(K+1);  
+		for (int i = 0; i < n; i++)
 			c[r[a[i]]]++;  
-		}
 		for (int i = 1; i <= K; i++)
 			c[i] += c[i-1];
 		for (int i = n-1; i >= 0; --i)
 			b[--c[r[a[i]]]] = a[i];
-		delete[] c;
 	}
-	void suffixArray(int* T, int* SA, int n, int K) {
+	void suffixArray(VI &T, VI &SA, int n, int K) {
 		int n0 = (n + 2) / 3, n1 = (n + 1) / 3, n2 = n / 3, n02 = n0 + n2;
-		int* R = new int[n02 + 3];
-		R[n02] = R[n02 + 1] = R[n02 + 2] = 0;
-		int* SA12 = new int[n02 + 3];
-		SA12[n02] = SA12[n02 + 1] = SA12[n02 + 2] = 0;
-		int* R0 = new int[n0];
-		int* SA0 = new int[n0];
+		VI R(n02+3), SA12(n02+3), R0(n0), SA0(n0);
 		for (int i = 0, j = 0; i < n + (n0 - n1); i++)
 			if (i % 3 != 0)
 				R[j++] = i;
-		radixPass(R, SA12, T + 2, n02, K);
-		radixPass(SA12, R, T + 1, n02, K);
-		radixPass(R, SA12, T, n02, K);
+		radixPass(R, SA12, T.begin() + 2, n02, K);
+		radixPass(SA12, R, T.begin() + 1, n02, K);
+		radixPass(R, SA12, T.begin(), n02, K);
 		int name = 0, c0 = -1, c1 = -1, c2 = -1;
 		for (int i = 0; i < n02; i++) {
 			if (T[SA12[i]] != c0 || T[SA12[i] + 1] != c1
@@ -109,7 +98,7 @@ struct SuffixArray {
 		for (int i = 0, j = 0; i < n02; i++)
 			if (SA12[i] < n0)
 				R0[j++] = 3 * SA12[i];
-		radixPass(R0, SA0, T, n0, K);
+		radixPass(R0, SA0, T.begin(), n0, K);
 		for (int p = 0, t = n0 - n1, k = 0; k < n; k++) {
 #define GetI() (SA12[t] < n0 ? SA12[t] * 3 + 1 : (SA12[t] - n0) * 3 + 2)
 			int i = GetI(); // pos of current offset 12 suffix
@@ -130,10 +119,6 @@ struct SuffixArray {
 						SA[k] = GetI();
 			}
 		}
-		delete[] R;
-		delete[] SA12;
-		delete[] SA0;
-		delete[] R0;
 	}
 	void BuildLCP() {
 		VI PLCP(N), PHI(N);
