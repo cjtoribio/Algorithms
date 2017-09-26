@@ -191,7 +191,7 @@ struct SuffixArray {
 		}
 		return lo;
 	}
-	// M + logN (high constant)
+	// M + logN (high constant) (slow in practice)
 	int lowerBound2(const string &P, int deb = 0){
 		int lo = 0, hi = N;
 		int k = match(SA[0], P), pm = 0;
