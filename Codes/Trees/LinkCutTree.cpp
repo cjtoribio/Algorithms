@@ -3,20 +3,27 @@ struct LinkCutTree
 	struct Node
 	{
 		Node *p,*r,*l;
-		int sz,gid,id;
+		int sz,gid,id,csz;
 		Node(){
 			static int IDX = 0;
 			p = r = l = NULL;
 			sz = 1; gid = IDX++; id=0;
+			csz = 0;
 		}
 		bool isLocalRoot(){
 			return p == NULL || (p->r != this && p->l != this);
 		}
 		void pushDown(){
-			
+			if(l)l->addSize(csz);
+			if(r)r->addSize(csz);
+			csz = 0;
 		}
 		void update(){
-			
+//			sz = 1 + (l ? l->sz : 0) + (r ? r->sz : 0);
+		}
+		void addSize(int sz){
+			csz += sz;
+			this->sz += sz;
 		}
 	};
 	vector<Node> V; int N;
@@ -46,6 +53,7 @@ struct LinkCutTree
 		Node* last = NULL;
 		for(Node *x = v; x ; x = x->p){
 			splay(x);
+			x->pushDown();
 			x->r = last;
 			x->update();
 			last = x;
@@ -58,6 +66,8 @@ struct LinkCutTree
 		_expose(v);
 		if (!v->l) {
 			v->p = u;
+			_expose(v);
+			v->l->addSize(v->sz);
 			v->update();
 		}
 	}
@@ -65,6 +75,8 @@ struct LinkCutTree
 	void _cut(Node *v) {
 		_expose(v);
 		if (v->l) {
+			assert(v->p == NULL);
+			v->l->addSize(-v->sz);
 			v->l->p = NULL;
 			v->l = NULL;
 			v->update();
@@ -94,7 +106,7 @@ struct LinkCutTree
 	}
 	void print(Node *v, int LVL = 0){
 		if(v->r)print(v->r,LVL+1);
-		cout << string(LVL,'\t') << v->id << "|" << (v->p ? v->p->id : -1) << endl;
+		cout << string(LVL,'\t') << v->id << "| " << v->sz << " " << (v->p ? v->p->id : -1) << " " << v->csz << endl;
 		if(v->l)print(v->l,LVL+1);
 	}
 };
