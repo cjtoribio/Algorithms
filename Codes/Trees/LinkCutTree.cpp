@@ -19,7 +19,6 @@ struct LinkCutTree
 			csz = 0;
 		}
 		void update(){
-//			sz = 1 + (l ? l->sz : 0) + (r ? r->sz : 0);
 		}
 		void addSize(int sz){
 			csz += sz;
