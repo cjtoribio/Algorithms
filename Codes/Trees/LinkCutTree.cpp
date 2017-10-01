@@ -74,7 +74,6 @@ struct LinkCutTree
 	void _cut(Node *v) {
 		_expose(v);
 		if (v->l) {
-			assert(v->p == NULL);
 			v->l->addSize(-v->sz);
 			v->l->p = NULL;
 			v->l = NULL;
