@@ -14,10 +14,8 @@ struct VectorTreap {
 	VectorTreap(){ root = NULL; }
 	void split (Node *t, int sz, Node *&l, Node *&r) {
 		if (!t)l = r = NULL;
-		else if ( sz <= t->lsz() )
-			split (t->l, sz, l, t->l), r = t;
-		else
-			split (t->r, sz-t->lsz()-1, t->r, r), l = t;
+		else if ( sz <= t->lsz() ) split (t->l, sz, l, t->l), r = t;
+		else                       split (t->r, sz-t->lsz()-1, t->r, r), l = t;
 		if(t)t->update();
 	}
 	void insertAt(int pos, T x){
@@ -26,10 +24,9 @@ struct VectorTreap {
 	}
 	void insertAt (int sz, Node *&t, Node *it) {
 		if(!t)t = it;
-		else if(it->y > t->y)
-			split(t, sz, it->l, it->r), t = it;
-		else
-			insertAt(sz <= t->lsz() ? sz : (sz-t->lsz()-1), sz <= t->lsz() ? t->l : t->r, it);
+		else if(it->y > t->y)   split(t, sz, it->l, it->r), t = it;
+		else if(sz <= t->lsz()) insertAt(sz, t->l, it);
+		else                    insertAt(sz - t->lsz() - 1, t->r, it);
 		t->update();
 	}
 	void eraseAt(int pos){
@@ -37,22 +34,18 @@ struct VectorTreap {
 		eraseAt(pos, root);
 	}
 	void eraseAt(int sz, Node *&t){
-		if(sz == t->lsz()){
-			Node *old = t;
-			merge(t, t->l, t->r);
-			delete old;
-		}else
-			eraseAt(sz < t->lsz() ? sz : (sz-t->lsz()-1), sz < t->lsz() ? t->l : t->r);
+		if(sz == t->lsz())     delete merge(t, t->l, t->r);
+		else if(sz < t->lsz()) eraseAt(sz, t->l);
+		else                   eraseAt(sz - t->lsz()-1, sz, t->r);
 		if(t)t->update();
 	}
-	void merge (Node *&t, Node *l, Node *r) {
-		if (!l || ! r)
-			t = l? l: r;
-		else if (l->y > r->y)
-			merge (l->r, l->r, r), t = l;
-		else
-			merge (r->l, l, r->l), t = r;
+	Node* merge (Node *&t, Node *l, Node *r) {
+		Node *old = t;
+		if (!l || ! r) t = l? l: r;
+		else if (l->y > r->y) merge (l->r, l->r, r), t = l;
+		else 				  merge (r->l, l, r->l), t = r;
 		if(t)t->update();
+		return t;
 	}
 	void clear(){ clear(root);}
 	void clear(Node *&t){
@@ -63,8 +56,7 @@ struct VectorTreap {
 		t = NULL;
 	}
 	void print(bool asArray = false){
-		if(asArray)printArray(root);
-		else       printTree(root);
+		asArray ? printArray(root) : printTree(root);
 		cout << endl;
 	}
 	void printArray(Node *p, int LVL = 0){
