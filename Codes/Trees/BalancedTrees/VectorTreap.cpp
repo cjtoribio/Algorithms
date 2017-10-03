@@ -18,10 +18,7 @@ struct VectorTreap {
 		else                       split (t->r, sz-t->lsz()-1, t->r, r), l = t;
 		if(t)t->update();
 	}
-	void insertAt(int pos, T x){
-		Node *nn = new Node(x);
-		insertAt(pos, root, nn);
-	}
+	void insertAt(int pos, T x){ insertAt(pos, root, new Node(x)); }
 	void insertAt (int sz, Node *&t, Node *it) {
 		if(!t)t = it;
 		else if(it->y > t->y)   split(t, sz, it->l, it->r), t = it;
@@ -29,10 +26,7 @@ struct VectorTreap {
 		else                    insertAt(sz - t->lsz() - 1, t->r, it);
 		t->update();
 	}
-	void eraseAt(int pos){
-		if(!root)return;
-		eraseAt(pos, root);
-	}
+	void eraseAt(int pos){ if(root) eraseAt(pos, root); }
 	void eraseAt(int sz, Node *&t){
 		if(sz == t->lsz())     delete merge(t, t->l, t->r);
 		else if(sz < t->lsz()) eraseAt(sz, t->l);
@@ -50,10 +44,8 @@ struct VectorTreap {
 	void clear(){ clear(root);}
 	void clear(Node *&t){
 		if(!t)return;
-		clear(t->l);
-		clear(t->r);
-		delete t;
-		t = NULL;
+		clear(t->l); clear(t->r);
+		delete t; t = NULL;
 	}
 	void print(bool asArray = false){
 		asArray ? printArray(root) : printTree(root);
