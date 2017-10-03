@@ -48,19 +48,17 @@ struct VectorTreap {
 		delete t; t = NULL;
 	}
 	void print(bool asArray = false){
-		asArray ? printArray(root) : printTree(root);
+		if(root)asArray ? printArray(root) : printTree(root);
 		cout << endl;
 	}
 	void printArray(Node *p, int LVL = 0){
-		if(!p)return;
-		printArray(p->l, LVL+1);
+		if(p->l)printArray(p->l, LVL+1);
 		cout << (p->x) << " ";
-		printArray(p->r, LVL+1);
+		if(p->r)printArray(p->r, LVL+1);
 	}
 	void printTree(Node *p, int LVL = 0){
-		if(!p)return;
-		printTree(p->r, LVL+1);
+		if(p->r)printTree(p->r, LVL+1);
 		cout <<string(LVL*3,' ')<< (p->x) << "\n";
-		printTree(p->l, LVL+1);
+		if(p->l)printTree(p->l, LVL+1);
 	}
 };
