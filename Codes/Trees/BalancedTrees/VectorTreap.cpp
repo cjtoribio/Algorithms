@@ -38,7 +38,7 @@ struct VectorTreap {
 		Node *old = t;
 		if (!l || ! r) t = l? l: r;
 		else if (l->y > r->y) merge (l->r, l->r, r), t = l;
-		else 				  merge (r->l, l, r->l), t = r;
+		else                  merge (r->l, l, r->l), t = r;
 		if(t)t->update();
 		return old;
 	}
