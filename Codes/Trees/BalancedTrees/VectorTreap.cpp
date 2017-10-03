@@ -1,12 +1,13 @@
 template<class T>
 struct VectorTreap {
 	struct Node{
-		int y,sz;
-		T x;
+		int y, sz;
+		T x, sum;
 		Node *l, *r;
-		Node(T x):x(x){ y = rand(); sz = 1; l = r = NULL; }
+		Node(T x):x(x),sum(x){ y = rand(); sz = 1; l = r = NULL; }
 		void update(){
 			sz = 1 + (r?r->sz:0) + (l?l->sz:0);
+			sum= x + (r?r->sum:T()) + (l?l->sum:T());
 		}
 		int lsz(){ return (l?l->sz:0); }
 	};
@@ -39,7 +40,15 @@ struct VectorTreap {
 		else if (l->y > r->y) merge (l->r, l->r, r), t = l;
 		else 				  merge (r->l, l, r->l), t = r;
 		if(t)t->update();
-		return t;
+		return old;
+	}
+	int size(){ return root?root->sz:0; }
+	T range(int b, int e){
+		Node *l, *m, *r;
+		split(root, e+1, l, r); split(l, b, l, m);
+		T cnt = m ? m->sum : T();
+		merge(l, l, m); merge(root, l, r);
+		return cnt;
 	}
 	void clear(){ clear(root);}
 	void clear(Node *&t){
