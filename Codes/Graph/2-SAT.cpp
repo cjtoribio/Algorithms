@@ -21,6 +21,12 @@ struct SAT2
 		addImplication(-i, j);
 		addImplication(-j, i);
 	}
+	void addXor(int i, int j){
+		addImplication(i, -j);
+		addImplication(j, -i);
+		addImplication(-i, j);
+		addImplication(-j, i);
+	}
 	void setTrue(int i){
 		addImplication(-i, i);
 	}
