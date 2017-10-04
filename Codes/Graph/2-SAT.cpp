@@ -19,7 +19,7 @@ struct SAT2
 	}
 	void addOr(int i, int j){
 		addImplication(-i, j);
-		addImplication(j, -i);
+		addImplication(-j, i);
 	}
 	void setTrue(int i){
 		addImplication(-i, i);
