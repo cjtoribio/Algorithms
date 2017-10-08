@@ -36,7 +36,7 @@ struct EulerTree {
 		p->update();v->update();
 	}
 	void splay(Node *v){
-		while(!v->p) moveUp(v);
+		while(v->p) moveUp(v);
 	}
 	void link(int u, int v){
 		Node *su = ST[u], *ev = EN[v];
@@ -63,8 +63,8 @@ struct EulerTree {
 	}
 	void print(bool asArray = false){
 		for(int i = 0; i < N; ++i)
-			if(ST[i]->p || EN[i]->p){
-				Node *tp = ST[i]->p ? ST[i] : EN[i];
+			if(!ST[i]->p || !EN[i]->p){
+				Node *tp = !ST[i]->p ? ST[i] : EN[i];
 				!asArray ? printTree(tp) : printArray(tp);
 				if(!asArray)cout << "-----------------------" << endl;
 				else cout << endl;
