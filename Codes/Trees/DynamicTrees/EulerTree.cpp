@@ -1,6 +1,5 @@
 struct EulerTree {
-	struct Node
-	{
+	struct Node {
 		Node *p,*r,*l;
 		int sz,gid,id;
 		Node(){
@@ -8,42 +7,36 @@ struct EulerTree {
 			p = r = l = NULL;
 			sz = 1; gid = IDX++; id=0;
 		}
-		bool isLocalRoot(){
-			return p == NULL || (p->r != this && p->l != this);
-		}
-		void pushDown(){
-			
-		}
+		void pushDown(){ }
 		void update(){
 			sz = 1 + (l?l->sz:0) + (r?r->sz:0); 
 		}
 	};
-	vector<Node*> ST, EN; int N;
-	EulerTree(int N) : N(N){
-		ST = EN = vector<Node*>(N);
-		for (int i = 0; i < N; ++i){
-			ST[i] = new Node();
-			EN[i] = new Node();
-			ST[i]->id = EN[i]->id = i;
-			ST[i]->r = EN[i]; EN[i]->p = ST[i];
-			ST[i]->sz = 2;
-		}
+	vector<Node*> ST, EN; int N = 0;
+	EulerTree(int N) {
+		for (int i = 0; i < N; ++i)
+			createNode();
+	}
+	void createNode(){
+		Node *s = new Node(), *e = new Node();
+		e->id = s->id = N++;
+		s->r = e; e->p = s;
+		s->update();
+		ST.push_back(s); EN.push_back(e);
 	}
 	void moveUp(Node *v){
 		if(!v->p)return;
 		Node *p = v->p;
 		p->pushDown(); v->pushDown();
 		Node *g = p->p;
-		p->p = v;
-		v->p = g;
+		p->p = v; v->p = g;
 		if(p->l == v){ p->l = v->r; v->r = p; if(p->l)p->l->p = p; }
 		else         { p->r = v->l; v->l = p; if(p->r)p->r->p = p; } 
 		if(g && (g->l == p || g->r == p))(g->l == p ? g->l : g->r) = v;
 		p->update();v->update();
 	}
 	void splay(Node *v){
-		while(!v->isLocalRoot())
-			moveUp(v);
+		while(!v->p) moveUp(v);
 	}
 	void link(int u, int v){
 		Node *su = ST[u], *ev = EN[v];
@@ -61,18 +54,17 @@ struct EulerTree {
 		splay(ev); splay(sv);
 		if(sv->l){
 			Node *le = sv->l, *ri = ev->r;
-			while(le->r)le = le->r;
-			while(ri->l)ri = ri->l;
+			while(le->r) le = le->r; 
+			while(ri->l) ri = ri->l;
 			splay(ri); splay(le);
-			assert(sv->p == ri);
-			ri->l = NULL; sv->p = NULL;
+			ri->l = NULL; sv->p = NULL; // s->p == ri->l
 			ri->update(); le->update();
 		}
 	}
 	void print(bool asArray = false){
 		for(int i = 0; i < N; ++i)
-			if(ST[i]->isLocalRoot() || EN[i]->isLocalRoot()){
-				Node *tp = ST[i]->isLocalRoot() ? ST[i] : EN[i];
+			if(ST[i]->p || EN[i]->p){
+				Node *tp = ST[i]->p ? ST[i] : EN[i];
 				!asArray ? printTree(tp) : printArray(tp);
 				if(!asArray)cout << "-----------------------" << endl;
 				else cout << endl;
