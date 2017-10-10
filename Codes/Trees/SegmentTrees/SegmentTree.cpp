@@ -37,10 +37,10 @@ struct SegmentTree {
 			V[n].join(V[2*n], V[2*n+1]);
 		}
 	}
-	T query(int i, int j, int n = 1, int b = 0, int e = -1) {
+	long long query(int i, int j, int n = 1, int b = 0, int e = -1) {
 		if(e == -1) e = N-1;
 		if (i <= b && e <= j){
-			return V[n].val;
+			return V[n].val.get();
 		} else {
 			if(V[n].hasCarry){
 				V[2*n].update(V[n].carry);
@@ -74,11 +74,10 @@ struct SegmentTree {
 		}
 	}
 };
-int sum[10];
 typedef long long Long;
 struct Replace {
-	vector<char> c;
-	Replace(int from = 0, int to = 0):c(10){
+	char c[10];
+	Replace(int from = 0, int to = 0){
 		for (int i = 0; i < 10; ++i) {
 			c[i] = i;
 		}
@@ -88,17 +87,17 @@ struct Replace {
 		return *this;
 	}
 	void operator+=(const Replace &a){
-		static vector<char> nc(10);
-		fill(nc.begin(), nc.end(), 0);
+		static char nc[10];
 		for (int i = 0; i < 10; ++i) {
 			nc[i] = a.c[c[i]];
 		}
-		copy(nc.begin(), nc.end(), c.begin());
+		copy(nc, nc+10, c);
 	}
 };
 struct DigitSum {
-	vector<Long> d;
-	DigitSum(int v=0):d(10){
+	Long d[10];
+	DigitSum(int v=0){
+		fill(d,d+10,0);
 		int p = 1;
 		while(v > 0){
 			d[v%10] += p;
@@ -114,12 +113,12 @@ struct DigitSum {
 		return r;
 	}
 	void operator+=(const Replace &a){
-		static vector<Long> nd(10);
-		fill(nd.begin(), nd.end(), 0);
+		static Long nd[10];
+		fill(nd, nd+10, 0);
 		for (int i = 0; i < 10; ++i) {
 			nd[ a.c[i] ] += d[i];
 		}
-		copy(nd.begin(), nd.end(), d.begin());
+		copy(nd, nd+10, d);
 	}
 	Long get()const{
 		Long r = 0;
