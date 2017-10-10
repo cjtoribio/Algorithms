@@ -1,18 +1,16 @@
 template<class T, class U>
 struct ISegmentTree {
 	struct Node {
-		int sz = 1;
 		bool hasCarry = 0;
 		U carry = U(); T val = T();
 		Node(){ }
 		void join(const Node &l, const Node &r){
 			if(hasCarry)return;
-			sz = l.sz + r.sz;
 			val = l.val + r.val;
 		}
 		void update(const U &u){
 			carry += u;
-			val += u * sz;
+			val += u;
 			hasCarry = 1;
 		}
 		void pushDown(Node &l, Node &r){
