@@ -74,6 +74,7 @@ struct SegmentTree {
 		}
 	}
 };
+int sum[10];
 typedef long long Long;
 struct Replace {
 	vector<char> c;
@@ -87,11 +88,12 @@ struct Replace {
 		return *this;
 	}
 	void operator+=(const Replace &a){
-		vector<char> nc(10);
+		static vector<char> nc(10);
+		fill(nc.begin(), nc.end(), 0);
 		for (int i = 0; i < 10; ++i) {
 			nc[i] = a.c[c[i]];
 		}
-		c = nc;
+		copy(nc.begin(), nc.end(), c.begin());
 	}
 };
 struct DigitSum {
@@ -112,11 +114,12 @@ struct DigitSum {
 		return r;
 	}
 	void operator+=(const Replace &a){
-		vector<Long> nd(10);
+		static vector<Long> nd(10);
+		fill(nd.begin(), nd.end(), 0);
 		for (int i = 0; i < 10; ++i) {
 			nd[ a.c[i] ] += d[i];
 		}
-		d = nd;
+		copy(nd.begin(), nd.end(), d.begin());
 	}
 	Long get()const{
 		Long r = 0;
