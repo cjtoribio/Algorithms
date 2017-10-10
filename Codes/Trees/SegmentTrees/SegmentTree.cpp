@@ -37,10 +37,10 @@ struct SegmentTree {
 			V[n].join(V[2*n], V[2*n+1]);
 		}
 	}
-	long long query(int i, int j, int n = 1, int b = 0, int e = -1) {
+	T query(int i, int j, int n = 1, int b = 0, int e = -1) {
 		if(e == -1) e = N-1;
 		if (i <= b && e <= j){
-			return V[n].val.get();
+			return V[n].val;
 		} else {
 			if(V[n].hasCarry){
 				V[2*n].update(V[n].carry);
