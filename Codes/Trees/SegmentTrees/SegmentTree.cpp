@@ -42,12 +42,7 @@ struct SegmentTree {
 		if (i <= b && e <= j){
 			return V[n].val;
 		} else {
-			if(V[n].hasCarry){
-				V[2*n].update(V[n].carry);
-				V[2*n+1].update(V[n].carry);
-				V[n].carry = U();
-				V[n].hasCarry = 0;
-			}
+			V[n].pushDown(V[n<<1], V[n<<1|1]);
 			int m = (b + e) / 2;
 			if (i >  m) return query(i, j, 2*n+1, m+1, e);
 			if (j <= m) return query(i, j, 2*n, b, m);
@@ -61,12 +56,7 @@ struct SegmentTree {
 		} else if (i > e || j < b)
 			return;
 		else {
-			if(V[n].hasCarry){
-				V[2*n].update(V[n].carry);
-				V[2*n+1].update(V[n].carry);
-				V[n].carry = U();
-				V[n].hasCarry = 0;
-			}
+			V[n].pushDown(V[n<<1], V[n<<1|1]);
 			int m = (b + e) / 2;
 			update(i, j, v, 2 * n, b, m);
 			update(i, j, v, 2 * n + 1, m + 1, e);
