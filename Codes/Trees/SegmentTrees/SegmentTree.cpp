@@ -66,50 +66,54 @@ struct SegmentTree {
 	}
 };
 typedef long long Long;
-struct String {
-	int f[26];
-	int sz;
-	String(){
-		fill(f, f+26, 0);
-		sz = 0;
+struct DigitSum {
+	Long d[10];
+	DigitSum(int v=0){
+		fill(d,d+10,0);
+		int p = 1;
+		while(v > 0){
+			d[v%10] += p;
+			v /= 10;
+			p *= 10;
+		}
 	}
-	String(char c){
-		fill(f, f+26, 0);
-		f[c - 'a']++;
-		sz = 1;
-	}
-	String operator+(const String &a)const{ 
-		String r;
-		r.sz = sz + a.sz;
-		for (int i = 0; i < 26; ++i) {
-			r.f[i] = f[i] + a.f[i];
+	DigitSum operator+(const DigitSum &a)const{ 
+		DigitSum r;
+		for (int i = 0; i < 10; ++i) {
+			r.d[i] = d[i] + a.d[i];
 		}
 		return r;
 	}
-	bool isPal(){
-		int o = 0;
-		for (int i = 0; i < 26; ++i) {
-			o += f[i] & 1;
+	Long get()const{
+		Long r = 0;
+		for (int i = 0; i < 10; ++i) {
+			r += i * d[i];
 		}
-		return o <= 1;
-	}
-	char get(){
-//		assert(sz == 1);
-		return find(f, f+26, 1) - f + 'a';
+		return r;
 	}
 };
-struct Set {
-	int v;
-	Set(){}
-	Set(int c):v(c){ }
-	Set trim(int l, int r)const{
-		return *this;
+struct Replace {
+	char c[10];
+	Replace(int from = 0, int to = 0){
+		for (int i = 0; i < 10; ++i) {
+			c[i] = i;
+		}
+		c[from] = to;
 	}
-	void operator+=(const Set &s){
-		v = s.v;
+	Replace trim(int l, int r){ return *this; }
+	void operator+=(const Replace &a){
+		static char nc[10];
+		for (int i = 0; i < 10; ++i) {
+			nc[i] = a.c[c[i]];
+		}
+		copy(nc, nc+10, c);
 	}
-	void operator()(String &a)const{
-		fill(a.f, a.f+26, 0);
-		a.f[v] = a.sz;
+	void operator+=(DigitSum &a){
+		static Long nd[10];
+		fill(nd, nd+10, 0);
+		for (int i = 0; i < 10; ++i) {
+			nd[ c[i] ] += a.d[i];
+		}
+		copy(nd, nd+10, a.d);
 	}
 };
