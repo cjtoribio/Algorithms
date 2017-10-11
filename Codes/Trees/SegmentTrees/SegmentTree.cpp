@@ -2,20 +2,22 @@ template<class T, class U>
 struct SegmentTree {
 	struct Node {
 		bool hasCarry = 0;
+		int b = 0,e = 0;
 		U carry = U(); T val = T();
 		Node(){ }
 		void join(const Node &l, const Node &r){
 			val = l.val + r.val;
+			b = l.b; e = r.e;
 		}
 		void update(const U &u){
 			carry += u;
-			val += u;
+			val = u(val);
 			hasCarry = 1;
 		}
 		void pushDown(Node &l, Node &r){
 			if(!hasCarry)return;
-			l.update(carry);
-			r.update(carry);
+			l.update(carry.trim(0,r.e-r.b+1));
+			r.update(carry.trim(l.e-l.b+1,0));
 			carry = U();
 			hasCarry = 0;
 		}
@@ -27,7 +29,7 @@ struct SegmentTree {
 	void create(const vector<I> &VEC, int n = 1, int b = 0, int e = -1) {
 		if(e == -1) e = N-1;
 		if (b == e) {
-			V[n].val = T(VEC[b]);
+			V[n].val = T(VEC[b]), V[n].b = b, V[n].e = e;
 		} else {
 			int m = (b + e) / 2;
 			create(VEC, 2 * n, b, m);
@@ -50,7 +52,7 @@ struct SegmentTree {
 	void update(int i, int j, const U &v, int n = 1, int b = 0, int e = -1) {
 		if(e == -1) e = N-1;
 		if (i <= b && e <= j) {
-			V[n].update(v);
+			V[n].update(v.trim(max(b-i,0), max(j-e,0)));
 		} else if (i > e || j < b)
 			return;
 		else {
