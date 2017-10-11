@@ -13,7 +13,7 @@ struct ISegmentTree {
 		}
 		void update(const U &u){
 			carry += u;
-			val = u(val);
+			u(val);
 			hasCarry = 1;
 		}
 		void pushDown(Node &l, Node &r){
@@ -114,10 +114,8 @@ struct Set {
 	void operator+=(const Set &s){
 		v = s.v;
 	}
-	String operator()(const String &a)const{
-		String r;
-		r.f[v] = a.sz;
-		r.sz = a.sz;
-		return r;
+	void operator()(const String &a)const{
+		fill(a.f, a.f+26, 0);
+		a.f[v] = a.sz;
 	}
 };
