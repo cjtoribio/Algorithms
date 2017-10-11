@@ -11,20 +11,21 @@ struct SuffixArray {
 	void countingSort(int H) {
 		auto vrank = [&](int i) { return SA[i]+H<N ? RA[SA[i]+H]+1 : 0; };
 		int maxRank = *max_element(RA.begin(), RA.end());
-		VI freq(maxRank + 2), nSA(N);
+		static VI nSA(N);
+		VI freq(maxRank + 2);
 		for (int i = 0; i < N; ++i)
 			freq[vrank(i)]++;
 		for (int i = 1; i < freq.size(); ++i)
 			freq[i] += freq[i-1];
 		for (int i = N-1, p, m; i >= 0; --i)
 			nSA[--freq[vrank(i)]] = SA[i];
-		SA = move(nSA);
+		copy(nSA.begin(), nSA.end(), SA.begin());
 	}
-	void BuildSA() {
+	void buildSA() {
+		VI nRA(N);
 		for (int H = 1; H < N; H <<= 1) {
 			countingSort(H);
 			countingSort(0);
-			VI nRA(N);
 			int rank = nRA[SA[0]] = 0;
 			for (int i = 1; i < N; ++i) {
 				if (RA[SA[i]] != RA[SA[i - 1]])
@@ -35,10 +36,10 @@ struct SuffixArray {
 					rank++;
 				nRA[SA[i]] = rank;
 			}
-			RA = move(nRA);
+			copy(nRA.begin(), nRA.end(), RA.begin());
 		}
 	}
-	void BuildSA2(){
+	void buildSA2(){
 		VI T(N+3), SA(N+3);
 		for(int i = 0; i < A.size(); ++i)
 			T[i] = A[i];
@@ -119,23 +120,13 @@ struct SuffixArray {
 			}
 		}
 	}
-	void BuildLCP() {
-		VI PLCP(N), PHI(N);
-		PHI[SA[0]] = -1;
-		for (int i = 1; i < N; ++i)
-			PHI[SA[i]] = SA[i - 1];
-		for (int i = 0, L = 0; i < N; ++i) {
-			if (PHI[i] == -1) {
-				PLCP[i] = 0;
-				continue;
-			}
-			while (PHI[i] + L < N && i + L < N && A[i + L] == A[PHI[i] + L])
-				L++;
-			PLCP[i] = L;
-			L = max(L - 1, 0);
+	void buildLCP() {
+		for (int i = 0, k = 0; i < N; ++i) if (RA[i] != N - 1) {
+			for (int j = SA[RA[i] + 1]; A[i + k] == A[j + k];) 
+				++k;
+			LCP[RA[i]] = k;
+			if (k)--k;
 		}
-		for (int i = 1; i < N; ++i)
-			LCP[i] = PLCP[SA[i]];
 	}
 	vector<VI> RLCP;
 	void BuildRangeQueries() {
