@@ -7,6 +7,7 @@ struct SuffixArray {
 		N(B.size()), A(B), SA(B.size()), RA(B.size()), LCP(B.size())  {
 		for (int i = 0; i < N; ++i)
 			SA[i] = i, RA[i] = A[i];
+		if(N == 1) RA[0] = 0;
 	}
 	void countingSort(int H) {
 		auto vrank = [&](int i) { return SA[i]+H<N ? RA[SA[i]+H]+1 : 0; };
