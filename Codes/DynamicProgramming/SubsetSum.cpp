@@ -4,11 +4,12 @@ typedef long long Long;
 // http://codeforces.com/blog/entry/45223
 struct SubsetSum {
 	int mb;
-	VI A, B;
-	SubsetSum(int mb):mb(mb), A(1<<mb), B(1<<mb){}
+	VI A, B, F;
+	SubsetSum(int mb):mb(mb), A(1<<mb), B(1<<mb), F(1<<mb){}
 	void addVal(int n, int v = 1){
 		A[n] += v; // for counting subsets
 		B[n] += v; // for counting supersets
+		F[n] += v; // for original freq
 	}
 	void build(){
 		int ALL = (1<<mb)-1;
