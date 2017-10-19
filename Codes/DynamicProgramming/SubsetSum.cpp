@@ -1,3 +1,6 @@
+typedef vector<int> VI;
+typedef vector<VI> VVI;
+typedef long long Long;
 struct SubsetSum {
 	int mb;
 	VVI A; // A[j][i] = subset   of "i" on the lower "j" bits and match exacly upper bits
@@ -27,4 +30,25 @@ struct SubsetSum {
 	int sumSubsets(int n){
 		return A[mb][n];
 	}
+	int bestOr(int n){
+		int best = 0;
+		for (int i = mb-1; i >= 0; --i) {
+			if( n & (1<<i) ) continue; // not required bit
+			if(sumSupersets(best ^ (1<<i))) // exist a super set with this bit?
+				best ^= (1<<i);
+		}
+		return best;
+	}
 };
+
+int main() {
+	SubsetSum S(4); // (number of bits)
+	vector<int> V = {1, 3, 4 ,2, 1, 4, 2};
+	for (int i = 0; i < V.size(); ++i) {
+		S.addVal(V[i], 1);
+	}
+	S.build();
+	for (int i = 0; i < V.size(); ++i) {
+		cout << S.bestOr(V[i]) << " " << S.sumSubsets(V[i]) << " " << S.sumSupersets(V[i]) << endl;
+	}
+}
