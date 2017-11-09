@@ -1,3 +1,5 @@
+/// Offline structure to find multiple strings inside a 
+/// long text in O(N+M) where N = |text|, M = sum(|strings|)
 struct Node
 {
 	int parent , fail , output , letter, str , id;
@@ -6,8 +8,6 @@ struct Node
 		str = parent = fail = output = -1;
 	}
 };
-/// Offline structure to find multiple strings inside a 
-/// long text in O(N+M) where N = |text|, M = sum(|strings|)
 struct AhoCorasik {
 	static const int ROOT = 0;
 	static const int NONE = -1;
