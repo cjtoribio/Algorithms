@@ -39,3 +39,5 @@ FUNC2(operator <,  Point<F1>& lhs, Point<F2>& rhs, lhs.x < rhs.x || (lhs.x == rh
 #undef FUNC1
 #undef FUNC2
 #undef FUNC3
+
+template <class F> ostream& operator << (ostream& os, const Point<F>& point) { return os << point.x << ',' << point.y; }
