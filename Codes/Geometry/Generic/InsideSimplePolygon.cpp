@@ -1,3 +1,4 @@
+// returns -1 (inside), 0 (border), 1 (outside)
 template<class F1, class F2>
 int pointVsPolygon(const Point<F1>& point, const Polygon<F2>& poly) {
 	int n = static_cast<int>(poly.size()), windingNumber = 0;
