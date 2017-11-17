@@ -35,7 +35,10 @@ FUNC2(operator ^, Point<F1>& lhs, Point<F2>& rhs, lhs.x * rhs.y - lhs.y * rhs.x)
 FUNC2(operator ==, Point<F1>& lhs, Point<F2>& rhs, lhs.x == rhs.x && lhs.y == rhs.y)
 FUNC2(operator !=, Point<F1>& lhs, Point<F2>& rhs, !(lhs == rhs))
 FUNC2(operator <,  Point<F1>& lhs, Point<F2>& rhs, lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y))
-
+  
+FUNC2(ccw, Point<F1>& lhs, Point<F2>& rhs, rhs ^ lhs)
+FUNC3(ccw, Point<F1>& lhs, Point<F2>& rhs, Point<F3>& origin, ccw(lhs - origin, rhs - origin))
+  
 #undef FUNC1
 #undef FUNC2
 #undef FUNC3
