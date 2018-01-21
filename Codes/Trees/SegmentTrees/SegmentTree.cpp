@@ -50,24 +50,28 @@ struct SegmentTree {
 			return query(i, j, 2*n, b, m) + query(i, j, 2*n+1, m+1, e);
 		}
 	}
-	int findOkPrefix(int i, int j, const function<bool(T)> &isOk, int n = 1, int b = 0, int e = -1){
-		if(e == -1) e = N-1;
-		int m = (b+e)/2;
-		if(b == e){
-			return (i <= b && e <= j) && isOk(V[n].val);
-		}else if(j <= m){
-			return findOkPrefix(i, j, isOk, 2*n, b, m);
-		}else if(i > m){
-			return findOkPrefix(i, j, isOk, 2*n+1, m+1, e);
-		}else{
-			if(isOk(V[n].val)){
-				return min(e,j)-max(b,i) + 1;
-			}
-			int c0 = findOkPrefix(i, j, isOk, 2*n, b, m);
-			if(c0 == m-max(b,i)+1){
-				return c0 + findOkPrefix(i, j, isOk, 2*n+1, m+1, e);
-			}else{
-				return c0;
+	int findOkPrefix(int i, const function<bool(T)> &isOk){
+		vector<int> stk;
+		stk.reserve(20);
+		stk.push_back(1);
+		T acum; int sz = 0;
+		while(stk.size()) {
+			int t = stk.back(); stk.pop_back();
+			Node &n = V[t];
+			if(n.e < i) continue;
+			T newAcum = sz == 0 ? n.val : (acum + n.val);
+			if (i <= n.b) {
+				if (isOk(newAcum)) {
+					sz += n.e - n.b + 1;
+					acum = newAcum;
+				} else {
+					if(n.b == n.e) return sz;
+					stk.push_back(2 * t + 1);
+					stk.push_back(2 * t);
+				}
+			} else {
+				stk.push_back(2 * t + 1);
+				stk.push_back(2 * t);
 			}
 		}
 	}
