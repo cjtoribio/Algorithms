@@ -50,6 +50,27 @@ struct SegmentTree {
 			return query(i, j, 2*n, b, m) + query(i, j, 2*n+1, m+1, e);
 		}
 	}
+	int findOkPrefix(int i, int j, const function<bool(T)> &isOk, int n = 1, int b = 0, int e = -1){
+		if(e == -1) e = N-1;
+		int m = (b+e)/2;
+		if(b == e){
+			return (i <= b && e <= j) && isOk(V[n].val);
+		}else if(j <= m){
+			return findOkPrefix(i, j, isOk, 2*n, b, m);
+		}else if(i > m){
+			return findOkPrefix(i, j, isOk, 2*n+1, m+1, e);
+		}else{
+			if(isOk(V[n].val)){
+				return min(e,j)-max(b,i) + 1;
+			}
+			int c0 = findOkPrefix(i, j, isOk, 2*n, b, m);
+			if(c0 == m-max(b,i)+1){
+				return c0 + findOkPrefix(i, j, isOk, 2*n+1, m+1, e);
+			}else{
+				return c0;
+			}
+		}
+	}
 	void update(int i, int j, const U &v, int n = 1, int b = 0, int e = -1) {
 		if(e == -1) e = N-1;
 		if (i <= b && e <= j) {
@@ -100,7 +121,7 @@ struct Replace {
 		}
 		c[from] = to;
 	}
-	Replace trim(int l, int r){ return *this; }
+	Replace trim(int l, int r)const{ return *this; }
 	void operator+=(const Replace &a){
 		static char nc[10];
 		for (int i = 0; i < 10; ++i) {
@@ -108,7 +129,7 @@ struct Replace {
 		}
 		copy(nc, nc+10, c);
 	}
-	void operator+=(DigitSum &a){
+	void operator()(DigitSum &a)const{
 		static Long nd[10];
 		fill(nd, nd+10, 0);
 		for (int i = 0; i < 10; ++i) {
