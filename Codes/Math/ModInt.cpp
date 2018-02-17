@@ -65,3 +65,4 @@ struct ModInt {
 		return m;
 	}
 };
+typedef ModInt<1000000007> mint;
