@@ -9,10 +9,10 @@
   * ArticulationPointsAndBridges
 
 ## [Count Number of Minimum Spanning Trees](./Codes/Graph/CountMinimumSpanningTree.cpp)
-  * This is uses Count Number of Spanning Trees and [mint](cjtoribio/Algorithms/Codes/Math/ModInt.cpp#L68) 
+  * This is uses Count Number of Spanning Trees and [mint](/cjtoribio/Algorithms/Codes/Math/ModInt.cpp#L68) 
 
 ## [Count Number of Spanning Trees](./Codes/Graph/CountSpanningTree.cpp)
-  * <b>Note</b>: Code is equivalent to building the matrix with addEdge and finding determinant. [mint](cjtoribio/Algorithms/Codes/Math/ModInt.cpp#L68) is just a ModularInt with the defined operations (/, *, +, -) [note modular division needed]
+  * <b>Note</b>: Code is equivalent to building the matrix with addEdge and finding determinant. [mint](/cjtoribio/Algorithms/Codes/Math/ModInt.cpp#L68) is just a ModularInt with the defined operations (/, *, +, -) [note modular division needed]
 
 ## [Eulerian Path And Cycle](./Codes/Graph/EulerianPathAndCycle) 
   * Finds an eulerian path or a cycle in O(N)
