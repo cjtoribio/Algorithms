@@ -50,6 +50,7 @@ namespace NTT{
 		}
 	}
 	// this function is for Chinese Remainder Theorem it can be extracted if needed.
+	// pair<int,int> means { value, smallMod }
 	static long long crt(const std::vector< std::pair<int, int> >& a, int mod) {
 		long long res = 0;
 		long long mult = 1;
