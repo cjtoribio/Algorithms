@@ -1,52 +1,27 @@
-//============================================================================
-// Name        : HLD.cpp
-// Author      : cjtoribio
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
-//============================================================================
-
 #include <iostream>
 #include <vector>
-#include <cstdio>
 using namespace std;
 
-
 struct SegmentNode{
-	int sz;
-	bool HasCarry;
-	SegmentNode(){
-		this->sz = 1;
-		HasCarry = 0;
-	}
+	int sz = 1;
+	bool HasCarry = 0;
 	void join(const SegmentNode &l, const SegmentNode &r){
 		sz = l.sz + r.sz;
 	}
-	void update(){
-		HasCarry = 1;
-	}
-	void clear(){
-		HasCarry = 0;
-	}
+	void update(){ HasCarry = 1; }
+	void clear(){ HasCarry = 0; }
 };
 template<class T>
 struct SegmentTree
 {
-	T *V;
+	vector<T> V;
 	int N;
-	SegmentTree(int N)
-	{
-		this->V = new T[4*N];
-		this->N = N;
-	}
+	SegmentTree(int N) : V(4*N), N(N) {}
 	void create(const vector<typename T::Init> &VEC,int n = 1,int b = 0,int e = -1)
 	{
-		if(e == -1)e = N - 1;
-		if(b == e){
-			V[n] = T(VEC[b]);
-		}
-		else
-		{
+		if (e == -1) e = N - 1;
+		if (b == e) V[n] = T(VEC[b]);
+		else {
 			create(VEC,2*n,b,(e+b)/2);
 			create(VEC,2*n+1,(e+b)/2+1,e);
 			V[n] = V[2*n] + V[2*n+1];
@@ -54,12 +29,10 @@ struct SegmentTree
 	}
 	T query(int i,int j, int n = 1,int b = 0,int e = -1)
 	{
-		if(e == -1)e = N - 1;
-		if(i <= b && e <= j)return V[n];
-		else
-		{
-			if(V[n].HasCarry)
-			{
+		if (e == -1)e = N - 1;
+		if (i <= b && e <= j) return V[n];
+		else {
+			if(V[n].HasCarry) {
 				V[2*n  ].update(V[n].carry);
 				V[2*n+1].update(V[n].carry);
 				V[n].clear();
@@ -72,17 +45,11 @@ struct SegmentTree
 	}
 	void update(int i,int j,int v,int n = 1,int b=0,int e=-1)
 	{
-		if(e == -1)e = N - 1;
-		if(i <= b && e <= j)
-		{
-			V[n].update(v);
-		}
-		else if(i > e || j < b)
-			return;
-		else
-		{
-			if(V[n].HasCarry)
-			{
+		if (e == -1) e = N - 1;
+		if (i <= b && e <= j) V[n].update(v);
+		else if (i > e || j < b) return;
+		else {
+			if(V[n].HasCarry) {
 				V[2*n  ].update(V[n].carry);
 				V[2*n+1].update(V[n].carry);
 				V[n].clear();
@@ -93,7 +60,7 @@ struct SegmentTree
 			V[n] = V[2*n] + V[2*n+1];
 		}
 	}
-	int findLastIndex( bool (*isOk)(T) ){
+	int findLastIndex( bool (*isOk)(T) ){ // almost never needed
 		int n = 1;
 		T acum;
 		acum.sz = 0;
@@ -114,26 +81,24 @@ struct SegmentTree
 #define NONE 0
 #define OPEN 1
 #define CLOSE 2
-struct MinVal : SegmentNode 
+struct OpenBrackets : SegmentNode 
 {
-	struct Init {
+	struct Init { // type to send to the create
 		int val;
 		Init(int val=NONE):val(val){ }
 	};
 	int open, close;
 	int carry;
-	MinVal() : SegmentNode(){
-		open = 0;
-		close = 0;
-		carry = 0;
+	OpenBrackets() : SegmentNode(){ // default initialization if create not called
+		open = close = carry = 0;
 	}
-	MinVal(Init n) : SegmentNode()  {
+	OpenBrackets(Init n) : SegmentNode()  { // initialization with create called
 		open = (n.val == OPEN);
 		close = (n.val == CLOSE);
 		carry = 0;
 	}
-	MinVal operator+(const MinVal &N)const {
-		MinVal ret; ret.join( *this , N );
+	OpenBrackets operator+(const OpenBrackets &N)const { // join
+		OpenBrackets ret; ret.join( *this , N );
 		
 		int cancel = min(open, N.close);
 		ret.open = open + N.open - cancel;
@@ -141,18 +106,24 @@ struct MinVal : SegmentNode
 		
 		return ret;
 	}
-	void update(int val)
-	{	
+	void update(int val) {	// update node
 		SegmentNode::update();
-		if(val == OPEN){
+		if (val == OPEN) {
 			close = 0;
 			open = sz;
-		}else if(val == CLOSE){
+		} else if(val == CLOSE) {
 			close = sz;
 			open = 0;
-		}else{
+		} else {
 			open = 0;
 			close = 0;
 		}
 	}
 };
+
+int main() {
+	int N = 6;
+	SegmentTree<OpenBrackets> ST(N);
+	ST.create(vector<OpenBrackets::Init>(N, OPEN));
+	cout << ST.query(0, N-1).open << endl;
+}
