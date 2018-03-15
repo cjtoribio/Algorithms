@@ -49,6 +49,7 @@ namespace NTT{
 				a[i] = int (a[i] * 1ll * nrev % mod.mod);
 		}
 	}
+	// this function is for Chinese Remainder Theorem it can be extracted if needed.
 	static long long crt(const std::vector< std::pair<int, int> >& a, int mod) {
 		long long res = 0;
 		long long mult = 1;
