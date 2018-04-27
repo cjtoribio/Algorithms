@@ -1,5 +1,5 @@
 template<class T, class U>
-struct SegmentTree2 {
+struct SegmentTree {
     struct Node {
         bool hasCarry = 0;
         int b = 0,e = 0;
@@ -26,7 +26,7 @@ struct SegmentTree2 {
     vector<Node> V;
 #define idx(b, e) ((b+e)|(b!=e)) // memory optimized index
     int N;
-    SegmentTree2(int N) : V(2*N), N(N){ }
+    SegmentTree(int N) : V(2*N), N(N){ }
     template<class I>
     void create(const vector<I> &VEC, int b = 0, int e = -1) {
         if(e == -1) e = N-1;
