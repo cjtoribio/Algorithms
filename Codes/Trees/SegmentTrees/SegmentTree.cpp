@@ -24,7 +24,7 @@ struct SegmentTree {
         }
     };
     vector<Node> V;
-#define idx(b, e) ((b+e)|(b!=e)) // memory optimized index
+#define idx(b, e) (((b)+(e))|((b)!=(e))) // memory optimized index
     int N;
     SegmentTree(int N) : V(2*N), N(N){ }
     template<class I>
@@ -42,7 +42,7 @@ struct SegmentTree {
     }
     T query(int i, int j, int b = 0, int e = -1) {
         if(e == -1) e = N-1;
-        int n = (b + e) | (b != e);
+        int n = idx(b, e);
         if (i <= b && e <= j){
             return V[n].val;
         } else {
@@ -56,7 +56,7 @@ struct SegmentTree {
     int findOkPrefix(int i, const function<bool(T)> &isOk){
         vector<int> stk;
         stk.reserve(20);
-        stk.push_back((N-1) | (N-1 != 0));
+        stk.push_back(idx(0, N-1));
         T acum; int sz = 0;
         while(stk.size()) {
             int t = stk.back(); stk.pop_back();
@@ -70,14 +70,16 @@ struct SegmentTree {
                     acum = newAcum;
                 } else {
                     if(n.b == n.e) return sz;
-                    stk.push_back(idx(n.b, m));
                     stk.push_back(idx(m+1, n.e));
+                    stk.push_back(idx(n.b, m));
                 }
             } else {
+                if(n.b == n.e) continue;
                 stk.push_back(idx(m+1, n.e));
                 stk.push_back(idx(n.b, m));
             }
         }
+        return sz;
     }
     void update(int i, int j, const U &v, int b = 0, int e = -1) {
         if(e == -1) e = N-1;
