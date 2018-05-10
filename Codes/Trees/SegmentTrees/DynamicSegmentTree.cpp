@@ -1,10 +1,10 @@
 template <class T, class U>
 struct Treap {
     struct Node{
-        int y,sz,rev;
+        int y,sz;
         T val, tot;
         U carr;
-        bool pending;
+        bool pending, rev;
         Node *l, *r;
         ~Node() {
             if (l) delete l;
@@ -14,27 +14,26 @@ struct Treap {
             y = rand() % 1000000000;
             sz = 1;
             l = r = NULL;
-            rev = 0;
-            pending = false;
+            pending = rev = false;
         }
         int x(){
             return (l?l->sz:0);
         }
         void push(){
-            if(rev){
+            if (rev) {
                 swap(r,l);
                 if (r) r->rev ^= 1;
                 if (l) l->rev ^= 1;
-                rev = 0;
+                rev = false;
             }
-            if(pending){
+            if (pending) {
                 if (r) r->applyChange(carr);
                 if (l) l->applyChange(carr);
                 pending = false;
                 carr = U();
             }
         }
-        void update(){
+        void update() {
             sz = 1 + (r?r->sz:0) + (l?l->sz:0);
             tot = val;
             if (l) tot = l->tot + tot;
@@ -60,7 +59,7 @@ struct Treap {
             t = new Node();
         }else{
             int m = (i+j)/2;
-            t = new Node();;
+            t = new Node();
             build(t->l, i,m-1);
             build(t->r, m+1,j);
         }
@@ -76,25 +75,23 @@ struct Treap {
             split (t->r, x - t->x() - 1, t->r, r), l = t;
         if(t)t->update();
     }
+    void merge (Node *&t, Node *l, Node *r) {
+        if (!l || ! r) {
+            t = l? l: r;
+        } else if (l->y > r->y) {
+        	l->push();
+            merge (l->r, l->r, r), t = l;
+        } else {
+        	r->push();
+            merge (r->l, l, r->l), t = r;
+        }
+        if (t) t->update();
+    }
     void insert (Node *&t, int x, Node *it) {
         Node *t1, *t2;
         split(t, x, t1, t2);
         merge(t1, t1, it);
         merge(t, t1, t2);
-    }
-    void merge (Node *&t, Node *l, Node *r) {
-        if(l)l->push();
-        if(r)r->push();
-        if (!l || ! r){
-            t = l? l: r;
-        }else if (l->y > r->y){
-            merge (l->r, l->r, r);
-            t = l;
-        }else{
-            merge (r->l, l, r->l);
-            t = r;
-        }
-        if(t)t->update();
     }
     void reverse(int i, int j){
         Node *l, *m, *r;
@@ -106,13 +103,9 @@ struct Treap {
     }
     void insert(int i, T val) {
         Node *l, *r, *n = new Node(val);
-        if (i == 0) {
-            merge(root, n, root);
-        } else {
-            split(root, i-1, l, r);
-            merge(l, l, n);
-            merge(root, l, r);
-        }
+		split(root, i-1, l, r);
+		merge(l, l, n);
+		merge(root, l, r);
     }
     void remove(int i, int j) {
         Node *l, *r, *d;
