@@ -53,13 +53,10 @@ struct Treap {
         root = NULL;
         build(root, 0, N-1);
     }
-    void build(Node *&t, int i, int j){
-        if(j<i){
-            t = NULL;
-            return;
-        }else if(i==j){
-            t = new Node();
-        }else{
+    static void build(Node *&t, int i, int j){
+        if (j<i) { t = NULL; return; }
+        else if(i==j) { t = new Node(); }
+        else {
             int m = (i+j)/2;
             t = new Node();
             build(t->l, i,m-1);
@@ -68,7 +65,7 @@ struct Treap {
         t->update();
     }
     // splits the tree t with elements with x() less than or equal x
-    void split (Node *t, int x, Node *&l, Node *&r) {
+    static void split (Node *t, int x, Node *&l, Node *&r) {
         if(t)t->push();
         if (!t)l = r = NULL;
         else if ( x < t->x() )
@@ -77,23 +74,17 @@ struct Treap {
             split (t->r, x - t->x() - 1, t->r, r), l = t;
         if(t)t->update();
     }
-    void merge (Node *&t, Node *l, Node *r) {
+    static void merge (Node *&t, Node *l, Node *r) {
         if (!l || ! r) {
             t = l? l: r;
         } else if (l->y > r->y) {
-        	l->push();
+            l->push();
             merge (l->r, l->r, r), t = l;
         } else {
-        	r->push();
+            r->push();
             merge (r->l, l, r->l), t = r;
         }
         if (t) t->update();
-    }
-    void insert (Node *&t, int x, Node *it) {
-        Node *t1, *t2;
-        split(t, x, t1, t2);
-        merge(t1, t1, it);
-        merge(t, t1, t2);
     }
     void reverse(int i, int j){
         Node *l, *m, *r;
@@ -105,9 +96,9 @@ struct Treap {
     }
     void insert(int i, T val) {
         Node *l, *r, *n = new Node(val);
-		split(root, i-1, l, r);
-		merge(l, l, n);
-		merge(root, l, r);
+        split(root, i-1, l, r);
+        merge(l, l, n);
+        merge(root, l, r);
     }
     void remove(int i, int j) {
         Node *l, *r, *d;
@@ -133,6 +124,7 @@ struct Treap {
         merge(root, l, r);
         return ret;
     }
+    int size() { return root ? root->sz : 0; }
     void print(){
         print(root);
         cout << endl;
