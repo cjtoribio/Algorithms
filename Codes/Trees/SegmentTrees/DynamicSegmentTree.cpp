@@ -1,3 +1,5 @@
+// http://www.spoj.com/problems/AROPE/
+// http://www.spoj.com/problems/AROPE2/ (persisted version)
 template <class T, class U>
 struct Treap {
     struct Node{
