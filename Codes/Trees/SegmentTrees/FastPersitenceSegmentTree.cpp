@@ -2,7 +2,7 @@ template<class T>
 struct Node {
     int l, r;
     T val;
-    Node() : l(-1), r(-1) {}
+    Node() : l(-1), r(-1), val() {}
 };
 
 template<class T, class U>
