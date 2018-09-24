@@ -17,6 +17,7 @@ struct Fenwick {
         }
         return r;
     }
+    // V.size() - 1 if not found
     Long lowerBound(Long val) {
       int ans = 0;
       for (int i = hb; i > 0; i >>= 1) {
