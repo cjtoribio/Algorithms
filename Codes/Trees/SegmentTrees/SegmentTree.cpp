@@ -54,12 +54,12 @@ struct SegmentTree {
         }
     }
     int findOkPrefix(int i, const function<bool(T)> &isOk){
-        vector<int> stk;
-        stk.reserve(20);
-        stk.push_back(idx(0, N-1));
+        static int stk[50];
+        int ssz = 0;
+        stk[ssz++] = (idx(0, N-1));
         T acum; int sz = 0;
-        while(stk.size()) {
-            int t = stk.back(); stk.pop_back();
+        while(ssz > 0) {
+            int t = stk[--ssz];
             Node &n = V[t];
             int m = (n.b + n.e) / 2;
             if(n.e < i) continue;
@@ -70,13 +70,15 @@ struct SegmentTree {
                     acum = newAcum;
                 } else {
                     if(n.b == n.e) return sz;
-                    stk.push_back(idx(m+1, n.e));
-                    stk.push_back(idx(n.b, m));
+                    n.pushDown(V[idx(n.b, m)], V[idx(m+1, n.e)]);
+                    stk[ssz++] = (idx(m+1, n.e));
+                    stk[ssz++] = (idx(n.b, m));
                 }
             } else {
                 if(n.b == n.e) continue;
-                stk.push_back(idx(m+1, n.e));
-                stk.push_back(idx(n.b, m));
+                n.pushDown(V[idx(n.b, m)], V[idx(m+1, n.e)]);
+                stk[ssz++] = (idx(m+1, n.e));
+                stk[ssz++] = (idx(n.b, m));
             }
         }
         return sz;
