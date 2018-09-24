@@ -3,11 +3,8 @@ struct Fenwick {
     int hb;
     Fenwick(int N) : V(N+10) {
       hb = 1;
-      while (hb*2 < V.size()) {
-        hb <<= 1;
-      }
+      while (hb*2 < V.size()) hb <<= 1;
     }
-
     void add(int x, Long v) {
         for (int i = x + 1; i < V.size(); i += (i & -i)) {
             V[i] += v;
