@@ -2,10 +2,7 @@ struct LinearSieve {
   VI primes, primeFactor;
   LinearSieve(int L): primeFactor(L+1) { 
     for (int i = 2; i < primeFactor.size(); ++i) {
-      if (primeFactor[i] == 0) {
-          primeFactor[i] = i;
-          primes.push_back (i);
-      }
+      if (primeFactor[i] == 0) primes.push_back (primeFactor[i] = i);
       for (int j=0; j < primes.size() && primes[j]<=primeFactor[i] && i*primes[j]<=L; ++j)
           primeFactor[i * primes[j]] = primes[j];
     }
