@@ -3,7 +3,7 @@ typedef vector<VI> VVI;
 struct Konig {
     vector<int> ML, MR;
     VVI adj;
-    int L,R, mc;
+    int L,R, mm;
     Konig(int L,int R) : ML(L,-1), MR(R,-1), adj(L), L(L), R(R), mc(0) {}
     void AddEdge(int u, int v){
         adj[u].push_back(v);
@@ -11,7 +11,7 @@ struct Konig {
     void setMatch(int u, int v){
         ML[u] = v;
         MR[v] = u;
-        mc++;
+        mm++;
     }
     pair< vector<int> , vector<int> > getCover() {
         queue<int> QL;
@@ -26,8 +26,8 @@ struct Konig {
             int u = QL.front(); QL.pop();
             for(int i = 0; i < adj[u].size(); ++i){
                 int v = adj[u][i];
+                VIS_R[v] = 1;
                 if(MR[v] != -1 && !VIS_L[ MR[v] ]) {
-                    VIS_R[v] = 1;
                     VIS_L[MR[v]] = 1;
                     QL.push(MR[v]);
                 }
@@ -38,6 +38,7 @@ struct Konig {
             if(!VIS_L[i]) AL.push_back(i);
         for(int i = 0; i < R; ++i)
             if(VIS_R[i]) AR.push_back(i);
+        assert(mm == AL.size() + AR.size());
         return make_pair(AL,AR);
     }
 };
