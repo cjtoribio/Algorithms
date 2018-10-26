@@ -41,6 +41,7 @@ struct SuffixArray {
 		}
 	}
 	void buildSA2(){
+        	if (N == 1) { this->SA[0] = 0, this->RA[0] = 0; return; }
 		VI T(N+3), SA(N+3);
 		for(int i = 0; i < A.size(); ++i)
 			T[i] = A[i];
