@@ -10,33 +10,33 @@ struct HLD {
     }
     void dfsSZ(int u, int p = -1, int lvl = 0) {
         SZ[u] = 1; P[u] = p; LVL[u] = lvl;
-        int bsz = 0;
-        for (int i = 0; i < adj[u].size(); ++i) {
-            int v = adj[u][i];
+        VI &C = adj[u];
+        int bi = -1;
+        for (int i = 0; i < C.size(); ++i) {
+            int v = C[i];
             if (v != p) {
                 dfsSZ(v, u, lvl + 1);
-                if (bsz < SZ[v]) {
-                    swap(adj[u][0], adj[u][i]); // first child is favChild
-                    bsz = SZ[v];
+                if (bi == -1 || SZ[C[bi]] < SZ[v]) {
+                    bi = i;
                 }
                 SZ[u] += SZ[v];
             }
         }
+        while (bi > 0) swap(C[bi-1], C[bi]), bi--;
     }
     void dfsDiscovery(int u, int top, int &idx, int p = -1) {
         ST[u] = idx++; TOP[u] = u;
-        for (int v : adj[u]) {
-            dfsDiscovery(v, v == adj[u][0] ? top : v, idx, u);
-        }
+        for (int v : adj[u]) 
+            if (v != p) 
+                dfsDiscovery(v, v == adj[u][0] ? top : v, idx, u);
         EN[u] = idx;
     }
     void build() {
         int idx = 0;
         for (int i = 0; i < N; ++i) {
-            if (ST[i] == -1) {
-                dfsSZ(i);
-                dfsDiscovery(i, i, idx);
-            }
+            if (SZ[i]) continue;
+            dfsSZ(i);
+            dfsDiscovery(i, i, idx);
         }
         for (int i = 0; i < N; ++i) {
             PERM[ST[i]] = i;
