@@ -16,9 +16,8 @@ struct HLD {
             int v = C[i];
             if (v != p) {
                 dfsSZ(v, u, lvl + 1);
-                if (bi == -1 || SZ[C[bi]] < SZ[v]) {
+                if (bi == -1 || SZ[C[bi]] < SZ[v]) 
                     bi = i;
-                }
                 SZ[u] += SZ[v];
             }
         }
@@ -26,8 +25,8 @@ struct HLD {
     }
     void dfsDiscovery(int u, int top, int &idx, int p = -1) {
         ST[u] = idx++; TOP[u] = u;
-        for (int v : adj[u]) 
-            if (v != p) 
+        for (int v : adj[u])
+            if (v != p)
                 dfsDiscovery(v, v == adj[u][0] ? top : v, idx, u);
         EN[u] = idx;
     }
@@ -44,13 +43,9 @@ struct HLD {
     }
     int lca(int u, int v) {
         while (u != -1 && v != -1) {
-            if (TOP[u] == TOP[v]) {
-                return LVL[u] <= LVL[v] ? u : v;
-            } else if (LVL[TOP[u]] > LVL[TOP[v]]) {
-                u = P[TOP[u]];
-            } else {
-                v = P[TOP[v]];
-            }
+            if (TOP[u] == TOP[v]) return LVL[u] <= LVL[v] ? u : v;
+            else if (LVL[TOP[u]] > LVL[TOP[v]]) u = P[TOP[u]];
+            else v = P[TOP[v]];
         }
         return -1;
     }
@@ -59,13 +54,10 @@ struct HLD {
         vector<pair<int,int>> o;
         while (true) {
             if (TOP[u] == TOP[p]) {
-                if (ST[p] + (includeP ? 0 : 1) <= ST[u]) {
+                if (ST[p] + (includeP ? 0 : 1) <= ST[u])
                     o.emplace_back(ST[p] + (includeP ? 0 : 1), ST[u]);
-                }
                 break;
-            } else {
-                o.emplace_back(ST[TOP[u]], ST[u]);
-            }
+            } else o.emplace_back(ST[TOP[u]], ST[u]);
             u = P[TOP[u]];
         }
         return o;
