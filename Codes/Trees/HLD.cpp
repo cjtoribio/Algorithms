@@ -8,20 +8,17 @@ struct HLD {
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    void dfsSZ(int u, int p = -1, int lvl = 0) {
-        SZ[u] = 1; P[u] = p; LVL[u] = lvl;
-        VI &C = adj[u];
-        int bi = -1;
-        for (int i = 0; i < C.size(); ++i) {
-            int v = C[i];
-            if (v != p) {
-                dfsSZ(v, u, lvl + 1);
-                if (bi == -1 || SZ[C[bi]] < SZ[v]) 
-                    bi = i;
-                SZ[u] += SZ[v];
-            }
+    int dfsSZ(int u, int p = -1, int lvl = 0) {
+        SZ[u] = 1; P[u] = p; LVL[u] = lvl; int bi = -1;
+        for (int i = 0; i < adj[u].size(); ++i) {
+            int v = adj[u][i];
+            if (v == p) continue;
+            SZ[u] += dfsSZ(v, u, lvl + 1);
+            if (bi == -1 || SZ[adj[u][bi]] < SZ[v])
+                bi = i;
         }
-        while (bi > 0) swap(C[bi-1], C[bi]), bi--;
+        while (bi > 0) swap(adj[u][bi-1], adj[u][bi]), bi--; // put favorite child in first position
+        return SZ[u];
     }
     void dfsDiscovery(int u, int top, int &idx, int p = -1) {
         ST[u] = idx++; TOP[u] = u;
