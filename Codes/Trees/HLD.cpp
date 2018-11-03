@@ -21,7 +21,7 @@ struct HLD {
         return SZ[u];
     }
     void dfsDiscovery(int u, int top, int &idx, int p = -1) {
-        PERM[idx] = i; ST[u] = idx++; TOP[u] = u;
+        PERM[idx] = u; ST[u] = idx++; TOP[u] = u;
         for (int v : adj[u])
             if (v != p)
                 dfsDiscovery(v, v == adj[u][0] ? top : v, idx, u);
