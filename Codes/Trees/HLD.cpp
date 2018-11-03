@@ -21,7 +21,7 @@ struct HLD {
         return SZ[u];
     }
     void dfsDiscovery(int u, int top, int &idx, int p = -1) {
-        ST[u] = idx++; TOP[u] = u;
+        PERM[idx] = i; ST[u] = idx++; TOP[u] = u;
         for (int v : adj[u])
             if (v != p)
                 dfsDiscovery(v, v == adj[u][0] ? top : v, idx, u);
@@ -33,9 +33,6 @@ struct HLD {
             if (SZ[i]) continue;
             dfsSZ(i);
             dfsDiscovery(i, i, idx);
-        }
-        for (int i = 0; i < N; ++i) {
-            PERM[ST[i]] = i;
         }
     }
     int lca(int u, int v) {
