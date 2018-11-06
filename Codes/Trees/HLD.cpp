@@ -21,10 +21,10 @@ struct HLD {
         return SZ[u];
     }
     void dfsDiscovery(int u, int top, int &idx, int p = -1) {
-        PERM[idx] = u; ST[u] = idx++; TOP[u] = u;
+        PERM[idx] = u; ST[u] = idx++; TOP[u] = top;
         for (int v : adj[u])
             if (v != p)
-                dfsDiscovery(v, v == adj[u][0] ? top : v, idx, u);
+                dfsDiscovery(v, (v == adj[u][0]) ? top : v, idx, u);
         EN[u] = idx;
     }
     void build() {
