@@ -28,12 +28,9 @@ struct HLD {
         EN[u] = idx;
     }
     void build() {
-        int idx = 0;
-        for (int i = 0; i < N; ++i) {
-            if (SZ[i]) continue;
-            dfsSZ(i);
-            dfsDiscovery(i, i, idx);
-        }
+        for (int i = 0, idx = 0; i < N; ++i)
+            if (!SZ[i])
+                dfsSZ(i), dfsDiscovery(i, i, idx);
     }
     int lca(int u, int v) {
         while (u != -1 && v != -1) {
