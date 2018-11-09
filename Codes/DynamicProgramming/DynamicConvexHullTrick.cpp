@@ -53,9 +53,9 @@ struct ConvexHull {
     static void clean(vector<Line> &lines){
         vector<Line> nl;
         for(Line l : lines){
-            if (nl.size() && nl.back().m == l.m) continue;
             while(nl.size() >= 2 && pitty(nl[nl.size()-2], nl.back(), l))
                 nl.pop_back();
+            if (nl.size() && nl.back().m == l.m) nl.pop_back();
             nl.push_back(l);
         }
         lines = nl;
@@ -63,7 +63,7 @@ struct ConvexHull {
 };
 struct IncSlope {
     bool operator()(const Line &a, const Line &b) {
-        return a.m != b.m ? a.m < b.m : a.b > b.b;
+        return a.m != b.m ? a.m < b.m : a.b < b.b;
     }
     double best(double a, double b) const {
         return max(a, b);
@@ -71,7 +71,7 @@ struct IncSlope {
 };
 struct DecSlope {
     bool operator()(const Line &a, const Line &b) {
-        return a.m != b.m ? a.m > b.m : a.b < b.b;
+        return a.m != b.m ? a.m > b.m : a.b > b.b;
     }
     double best(double a, double b) const {
         return min(a, b);
