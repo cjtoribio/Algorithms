@@ -3,7 +3,7 @@ struct Line {
 };
 #define INF 1e200
 template<class cmp>
-struct ConvexHull2 {
+struct ConvexHull {
 	struct LineX {
 		Line l;
 		double x;
@@ -23,24 +23,21 @@ struct ConvexHull2 {
 		for (auto r = prev(it); r != S.begin() && pitty(prev(r)->l, r->l, l); --r) {
 			tr.push_back(r->l);
 		}
-		if (it != S.begin() && prev(it) == S.begin() && prev(it)->l.m == l.m) tr.push_back(prev(it)->l);
+		if (it != S.begin() && prev(it) == S.begin() && prev(it)->l.m == l.m)
+			tr.push_back(prev(it)->l);
 		for (auto f = it; f != S.end() && next(f) != S.end() && pitty(l, f->l, next(f)->l); f++) {
 			tr.push_back(f->l);
 		}
 		for (auto t : tr) S.erase({t, -INF});
 		vector<Line> ta;
 		auto pr = S.lower_bound({l, -INF});
-		if (pr != S.begin()) {
-			pr--;
-			ta.push_back(pr->l), S.erase(pr);
-		}
+		if (pr != S.begin()) { pr--; ta.push_back(pr->l), S.erase(pr); }
 		safeAdd(l);
 		if (ta.size()) safeAdd(ta[0]);
 	}
 	void safeAdd(Line l) {
 		auto it = S.lower_bound({l, -INF});
-		if (it != S.end()) S.insert({l, xinter(l, it->l)});
-		else S.insert({l, INF});
+		S.insert({l, it == S.end() ? INF : xinter(l, it->l)});
 	}
 	double getBest(double x) {
 		auto it = S.lower_bound({{0, 0}, x});
