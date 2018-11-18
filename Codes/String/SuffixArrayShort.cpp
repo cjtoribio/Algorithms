@@ -4,7 +4,7 @@ struct SuffixArray {
 	string A;
 	VI SA, RA, LCP;
 	SuffixArray(const string &B) :
-		N(B.size()), A(B), SA(B.size()), RA(B.size()), LCP(B.size())  {
+			N(B.size()), A(B), SA(B.size()), RA(B.size()), LCP(B.size())  {
 		for (int i = 0; i < N; ++i)
 			SA[i] = i, RA[i] = A[i];
 		if(N == 1) RA[0] = 0;
@@ -12,7 +12,7 @@ struct SuffixArray {
 	void countingSort(int H) {
 		auto vrank = [&](int i) { return SA[i]+H<N ? RA[SA[i]+H]+1 : 0; };
 		int maxRank = *max_element(RA.begin(), RA.end());
-		static VI nSA(N);
+		VI nSA(N);
 		VI freq(maxRank + 2);
 		for (int i = 0; i < N; ++i)
 			freq[vrank(i)]++;
@@ -41,7 +41,7 @@ struct SuffixArray {
 		}
 	}
 	void buildSA2(){
-        	if (N == 1) { this->SA[0] = 0, this->RA[0] = 0; return; }
+		if (N == 1) { this->SA[0] = 0, this->RA[0] = 0; return; }
 		VI T(N+3), SA(N+3);
 		for(int i = 0; i < A.size(); ++i)
 			T[i] = A[i];
@@ -58,9 +58,9 @@ struct SuffixArray {
 		return (a1 < b1 || (a1 == b1 && leq(a2, a3, b2, b3)));
 	}
 	static void radixPass(VI &a, VI &b, VI::iterator r, int n, int K) {
-		VI c(K+1);  
+		VI c(K+1);
 		for (int i = 0; i < n; i++)
-			c[r[a[i]]]++;  
+			c[r[a[i]]]++;
 		for (int i = 1; i <= K; i++)
 			c[i] += c[i-1];
 		for (int i = n-1; i >= 0; --i)
@@ -106,8 +106,8 @@ struct SuffixArray {
 			int i = GetI(); // pos of current offset 12 suffix
 			int j = SA0[p]; // pos of current offset 0 suffix
 			if (SA12[t] < n0 ? // different compares for mod 1 and mod 2 suffixes
-			leq(T[i], R[SA12[t] + n0], T[j], R[j / 3]) : 
-			leq(T[i], T[i + 1], R[SA12[t] - n0 + 1], T[j], T[j + 1], R[j / 3 + n0])) { // suffix from SA12 is smaller
+				leq(T[i], R[SA12[t] + n0], T[j], R[j / 3]) :
+				leq(T[i], T[i + 1], R[SA12[t] - n0 + 1], T[j], T[j + 1], R[j / 3 + n0])) { // suffix from SA12 is smaller
 				SA[k] = i;
 				t++;
 				if (t == n02) // done --- only SA0 suffixes left
@@ -124,11 +124,11 @@ struct SuffixArray {
 	}
 	void buildLCP() {
 		for (int i = 0, k = 0; i < N; ++i) if (RA[i] != N - 1) {
-			for (int j = SA[RA[i] + 1]; A[i + k] == A[j + k];) 
-				++k;
-			LCP[RA[i]] = k;
-			if (k)--k;
-		}
+				for (int j = SA[RA[i] + 1]; A[i + k] == A[j + k];)
+					++k;
+				LCP[RA[i]] = k;
+				if (k)--k;
+			}
 	}
 	vector<VI> RLCP;
 	void BuildRangeQueries() {
@@ -136,14 +136,14 @@ struct SuffixArray {
 		RLCP = vector<VI>(L, VI(N));
 		RLCP[0] = LCP;
 		for (int i = 1; i < L; ++i) {
-			for (int j = (1<<(i-1)); j < N; ++j)
-				RLCP[i][j] = min(RLCP[i - 1][j], RLCP[i-1][j - (1<<(i-1))]);
+			for (int j = 0; j+(1<<(i-1)) < N; ++j)
+				RLCP[i][j] = min(RLCP[i - 1][j], RLCP[i-1][j + (1<<(i-1))]);
 		}
 	}
 	int lcp(int i, int j) {
 		if (i == j) return N - SA[i];
 		int b = 31 - __builtin_clz(j-i);
-		return min(RLCP[b][j], RLCP[b][i+(1<<b)]);		
+		return min(RLCP[b][i], RLCP[b][j-(1<<b)]);
 	}
 	long long ops = 0;
 	int match(int idx, const string &P){
@@ -206,7 +206,7 @@ struct SuffixArray {
 					lo = m+1;
 				else if(A[SA[m]+k] < P[k])
 					lo = m+1;
-				else 
+				else
 					hi = m;
 				pm = m;
 			}
