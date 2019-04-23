@@ -24,10 +24,8 @@ struct Matrix
 	}
 	Matrix<T> operator+(Matrix<T> &M) {
 		Matrix<T> A(this->rows() , M.cols());
-		for(int i = 0; i < this->rows(); ++i)
-		{
-			for(int j = 0; j < this->cols(); ++j)
-			{
+		for(int i = 0; i < this->rows(); ++i) {
+			for(int j = 0; j < this->cols(); ++j) {
 				A[i][j] = ((*this)[i][j] + M[i][j]);
 			}
 		}
@@ -36,13 +34,10 @@ struct Matrix
 	Matrix<T> operator*(Matrix<T> &MA) const {
 		Matrix<T> A(this->rows() , MA.cols());
 		if(this->cols() != MA.rows())return A;
-		for(int i = 0; i < this->rows(); ++i)
-		{
-			for(int j = 0; j < MA.cols(); ++j)
-			{
+		for(int i = 0; i < this->rows(); ++i) {
+			for(int j = 0; j < MA.cols(); ++j) {
 				A[i][j] = 0;
-				for(int k = 0; k < this->cols(); ++k)
-				{
+				for(int k = 0; k < this->cols(); ++k) {
 					A[i][j] = (A[i][j] + MAT[i*M + k] * MA[k][j]);
 				}
 			}
@@ -51,10 +46,8 @@ struct Matrix
 	}
 	Matrix<T> operator*(int &n) {
 		Matrix<T> A(this->rows() , this->cols());
-		for(int i = 0; i < this->rows(); ++i)
-		{
-			for(int j = 0; j < this->cols(); ++j)
-			{
+		for(int i = 0; i < this->rows(); ++i) {
+			for(int j = 0; j < this->cols(); ++j) {
 				A[i][j] = (1LL * n * (*this)[i][j]);
 			}
 		}
@@ -62,8 +55,7 @@ struct Matrix
 	}
 	Matrix<T> pow(int n) {
 		Matrix<T> A = identity((*this).rows());
-		for(int b = (1<<30); b >= 1; b>>=1)
-		{
+		for(int b = (1<<30); b >= 1; b>>=1) {
 			A = A * A;
 			if(b & n)A = A * (*this);
 		}
@@ -72,6 +64,25 @@ struct Matrix
 	VirtualVector operator[](int i){
 		return VirtualVector(MAT, i*M);
 	}
+	int rows() const {return N;}
+	int cols() const {return M;}
+	string toString() {
+		string ans = "{\n";
+		for(int i = 0; i < this->rows(); ++i) {
+			ans += "[";
+			for(int j = 0; j < this->cols(); ++j) {
+				stringstream st;
+				string app = (j==0?"":" ");
+				st << app;
+				st << (*this)[i][j];
+				ans += st.str();
+			}
+			ans += "]\n";
+		}
+		ans += "}";
+		return ans;
+	}
+	// for inverse of matrix
 	void setRow(int ra, int rb, T a, T b) {
 		for (int j = 0; j < M; ++j) {
 			MAT[ra * M + j] = a * MAT[ra * M + j] + b * MAT[rb * M + j];
@@ -114,25 +125,5 @@ struct Matrix
 			}
 		}
 		return inv;
-	}
-	int rows() const {return N;}
-	int cols() const {return M;}
-	string toString() {
-		string ans = "{\n";
-		for(int i = 0; i < this->rows(); ++i)
-		{
-			ans += "[";
-			for(int j = 0; j < this->cols(); ++j)
-			{
-				stringstream st;
-				string app = (j==0?"":" ");
-				st << app;
-				st << (*this)[i][j];
-				ans += st.str();
-			}
-			ans += "]\n";
-		}
-		ans += "}";
-		return ans;
 	}
 };
