@@ -1,10 +1,10 @@
 /// This fenwick is used when N^2 is too big to fit in memory.
 /// For efficiency it is required that point are never heavily-clustered in a block
-/// Complexity is: 
-/// 	Query: (MAX_CLUSTER + log(N/BSIZE)^2) 
+/// Complexity is:
+/// 	Query: (MAX_CLUSTER + log(N/BSIZE)^2)
 /// 	Update: log(N/BSIZE)^2
 struct Fenwick2D {
-	const int BSIZE = 200;
+	const int BSIZE = 300;
 	struct Update {
 		int x,y,v;
 	};
@@ -15,8 +15,17 @@ struct Fenwick2D {
 	Fenwick2D(int n):N(n / BSIZE+2), F(n / BSIZE+2, VI(n / BSIZE+2)), X(n / BSIZE+2), Y(n / BSIZE+2){}
 	void ins(int x, int y, int v){
 		_ins(x / BSIZE, y / BSIZE, v);
-		X[x/BSIZE].push_back({x,y,v});
-		Y[y/BSIZE].push_back({x,y,v});
+		addOrRemove(X[x/BSIZE], {x, y, v});
+		addOrRemove(Y[y/BSIZE], {x, y, v});
+	}
+	void addOrRemove(vector<Update> &V, Update u) {
+		for (int i = 0; i < V.size(); ++i) {
+			if (V[i].x == u.x && V[i].y == u.y && V[i].v == -u.v) {
+				V.erase(V.begin() + i);
+				return;
+			}
+		}
+		V.push_back(u);
 	}
 	void _ins(int x, int y, int v){
 		for (int i = x+1; i < N; i += i & -i) {
