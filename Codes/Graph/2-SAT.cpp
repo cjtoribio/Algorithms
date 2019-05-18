@@ -16,6 +16,8 @@ struct SAT2
 		i = abs(i); j = abs(j);
 		adj[2*i+si].push_back(2*j+sj);
 		radj[2*j+sj].push_back(2*i+si);
+		adj[2*j+!sj].push_back(2*j+!sj);
+		radj[2*i+!sj].push_back(2*j+!si);
 	}
 	void addOr(int i, int j){
 		addImplication(-i, j);
