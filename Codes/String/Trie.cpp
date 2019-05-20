@@ -1,7 +1,5 @@
-struct Trie
-{
-	struct Node
-	{
+struct Trie {
+	struct Node {
 		int childs[26] , cnt;
 		Node(){
 			cnt = 0;
@@ -9,18 +7,15 @@ struct Trie
 		}
 	};
 	vector<Node> V;
-	Trie(int reserved = 0)
-	{
+	Trie(int reserved = 0) {
 		V = vector<Node>();
 		V.reserve(reserved);
 		V.push_back(Node());
 	}
-	void insert(const string &S)
-	{
+	void insert(const string &S) {
 		int v = 0;
 		V[v].cnt++;
-		for(int i = 0; i < S.size(); ++i)
-		{
+		for(int i = 0; i < S.size(); ++i) {
 			int p = S[i] - 'a';
 			if(V[v].childs[p] == -1){
 				V[v].childs[p] = V.size();
