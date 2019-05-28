@@ -3,8 +3,8 @@ typedef vector<VI> VVI;
 struct EulerianPath {
 	struct Edge{ 
 		int u,v,used;
-		int getV(int u){
-			return this->u == u ? v : u;
+		int getV(int _u){
+			return _u == u ? v : u;
 		}
 	};
 	bool directed;
