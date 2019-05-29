@@ -6,6 +6,6 @@ int solveLinearCongruence(int a, int b, int m) {
 	if (b == 0) return 0;
 	if (a == 0) return -1;
 	if (a == 1) return b;
-	int y = solveLinearCongruence(m % a, a - b % a, a);
+	int y = solveLinearCongruence(m % a, (a - b % a) % a, a);
 	return y < 0 ? y : (1LL*m*y+b) / a % m;
 }
