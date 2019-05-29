@@ -1,3 +1,4 @@
+// https://www.johndcook.com/blog/2008/12/10/solving-linear-congruences/
 // a*x = b (mod m) 
 // -1 (no solution if gcd(a, m) dont divide b) or x (a solution)
 // there exist gcd(a, m) solutions all of which are x + m/gcd(a,m)*[0...gcd-1]
