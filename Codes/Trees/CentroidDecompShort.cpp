@@ -19,14 +19,14 @@ struct Centroid {
 				SZ[u] += dfsSz(e.v, u);
 		return SZ[u];
 	}
-	int dfsGetCentroid(int u, int sz, int p = -1) {
+	int getCentroid(int u, int sz, int p = -1) {
 		for (Edge &e : adj[u])
 			if (e.v != p && L[e.v] == -1 && SZ[e.v] > sz / 2)
-				return dfsGetCentroid(e.v, sz, u);
+				return getCentroid(e.v, sz, u);
 		return u;
 	}
 	void computeCentroid(int root = 0, int prev = -1, int lvl = 0){
-		int cent = dfsGetCentroid(root, dfsSz(root));
+		int cent = getCentroid(root, dfsSz(root));
 		L[cent] = lvl; P[cent] = prev; SZ[cent] = SZ[root];
 		if(prev == -1) this->root = cent; else centAdj[prev].push_back(cent);
 		for(Edge &e : adj[cent])
