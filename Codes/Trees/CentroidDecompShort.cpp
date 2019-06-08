@@ -1,39 +1,37 @@
 struct Centroid {
-	struct Edge { int u, v; };
+	struct Edge { int u, v, w; };
 	vector<vector<Edge>> adj;
 	vector<vector<int>> centAdj;
-	vector<int> SZ, L, P;
+
+	vector<int> SZ; // size of the nodes in centered at u
+	vector<int> L; // level in the centroid tree
+	vector<int> P; // parent in the centroid tree
 	int root;
-	Centroid(int N): adj(N), centAdj(N), SZ(N), L(N, -1), P(N, -1), root(-1){}
-	void addEdge(int u,int v){
-		adj[u].push_back((Edge){u, v});
-		adj[v].push_back((Edge){v, u});
+	Centroid(int N): adj(N), centAdj(N), SZ(N), L(N, -1), P(N, -1), root(-1){ }
+	void addEdge(int u,int v, int w) {
+		adj[u].push_back((Edge){u, v, w});
+		adj[v].push_back((Edge){v, u, w});
 	}
-	int getCentroid(int u, int p, int sz, int lvl){
+	int dfsSz(int u, int p = -1) {
 		SZ[u] = 1;
-		int cent = -1, good = true;
-		for(Edge &e : adj[u]){ 
-			if(e.v == p || L[e.v] != -1)continue;
-			cent = max(cent, getCentroid(e.v, u, sz, lvl));
-			SZ[u] += SZ[e.v];	
-			good &= SZ[e.v] <= sz / 2;
-		}
-		good &= sz - SZ[u] <= sz / 2;
-		return good ? u : cent;
+		for (Edge &e : adj[u])
+			if (e.v != p && L[e.v] == -1)
+				SZ[u] += dfsSz(e.v, u);
+		return SZ[u];
 	}
-	void computeCentroid(int root = 0, int prev = -1, int lvl = 0, int sz = -1){
-		if(sz == -1)sz = adj.size();
-		int cent = getCentroid(root, -1, sz, lvl);
-		L[cent] = lvl; P[cent] = prev;
-		if(prev == -1)this->root = cent;
-		else centAdj[prev].push_back(cent);
-		for(Edge &e : adj[cent]){ 
-			if(L[e.v] == -1){
-				int nsz = (SZ[e.v] > SZ[cent] ? sz - SZ[cent] : SZ[e.v]);
-				computeCentroid(e.v, cent, lvl + 1, nsz);
-			}
-		}
-		SZ[cent] = sz;
+	int dfsGetCentroid(int u, int sz, int p = -1) {
+		for (Edge &e : adj[u])
+			if (e.v != p && L[e.v] == -1 && SZ[e.v] > sz / 2)
+				return dfsGetCentroid(e.v, sz, u);
+		return u;
+	}
+	void computeCentroid(int root = 0, int prev = -1, int lvl = 0){
+		int cent = dfsGetCentroid(root, dfsSz(root));
+		L[cent] = lvl; P[cent] = prev; SZ[cent] = SZ[root];
+		if(prev == -1) this->root = cent; else centAdj[prev].push_back(cent);
+		for(Edge &e : adj[cent])
+			if (L[e.v] == -1)
+				computeCentroid(e.v, cent, lvl + 1);
 	}
 	int lca(int u, int v){
 		while(L[u] > L[v])u = P[u];
