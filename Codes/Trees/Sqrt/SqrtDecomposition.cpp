@@ -31,14 +31,12 @@ struct SqrtDecomp {
             if (l <= s && e <= r) {
                 ans = ans + group[i].query();
             } else {
-                bool nu = false;
                 for (int k = s; k <= e; ++k) {
-                    assert(0 <= k && k < elem.size());
-                    nu |= ups[i].applyOne(elem[k]);
+                    ups[i].applyOne(elem[k]);
                     if (l <= k && k <= r) ans = ans + elem[k].query();
                 }
                 ups[i] = U();
-                if(nu) group[i].rebuild(getGroup(i));
+                group[i].rebuild(getGroup(i));
             }
         }
         return ans;
@@ -130,10 +128,8 @@ struct Add {
     void applyMany(int b, int e, CHT &s) const {
         s.x += v;
     }
-    bool applyOne(Line &s) const {
-        if (v == 0) return false;
+    void applyOne(Line &s) const {
         s.b += s.m * v;
-        return true;
     }
     void operator+=(const Add &o) {
         v += o.v;
