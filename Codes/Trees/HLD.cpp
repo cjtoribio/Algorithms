@@ -1,7 +1,6 @@
 struct HLD {
     int N;
-    VI SZ, P, ST, EN, TOP, LVL;
-    vector<int> PERM;
+    VI SZ, P, ST, EN, TOP, LVL, PERM;
     VVI adj;
     HLD(int N) : N(N), adj(N), PERM(N), SZ(N), P(N), ST(N), EN(N), TOP(N), LVL(N) {}
     void addEdge(int u, int v) {
