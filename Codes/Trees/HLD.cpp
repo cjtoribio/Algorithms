@@ -25,7 +25,7 @@ struct HLD {
         for (int v : adj[u])
             if (v != p)
                 dfsDiscovery(v, (v == adj[u][0]) ? top : v, idx, u);
-        EN[u] = idx;
+        EN[u] = idx - 1;
     }
     void build() {
         for (int i = 0, idx = 0; i < N; ++i)
