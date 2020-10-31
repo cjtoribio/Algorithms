@@ -23,8 +23,8 @@ struct PersistentSegmentTree {
         int id = newNode();
         if (b == e) return id;
         int m = (b+e)/2;
-        nodes[id].l = create(b, m);
-        nodes[id].r = create(m+1, e);
+        int nl = create(b, m); nodes[id].l = nl; // we assign to a variable first since the vector mutates and it may be harmful.
+        int nr = create(m+1, e); nodes[id].r = nr;
         return id;
     }
     int update(int oid, int i, int j, const U &u) { return update(oid, i, j, u, B, E); }
@@ -34,9 +34,10 @@ struct PersistentSegmentTree {
         if (b == e) {
             u(nodes[id].val);
         } else {
-            int m = (b + e) / 2;
-            if (j <= m) nodes[id].l = update(nodes[oid].l, i, j, u, b, m);
-            if (m < i) nodes[id].r = update(nodes[oid].r, i, j, u, m + 1, e);
+            int m = (b + e) / 2, nl = nodes[id].l, nr = nodes[id].r;
+            if (j <= m) nl = update(nodes[oid].l, i, j, u, b, m);
+            if (m < i) nr = update(nodes[oid].r, i, j, u, m + 1, e);
+            nodes[id].l = nl; nodes[id].r = nr;
             nodes[id].val = nodes[nodes[id].l].val + nodes[nodes[id].r].val;
         }
         return id;
