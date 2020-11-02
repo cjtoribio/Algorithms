@@ -95,7 +95,6 @@ struct EulerTree {
         splay(ST[v]);
     }
     void print(bool asArray = false, function<void(Node*)> printFn = [](auto p) { cout << p->id; }){
-
         for(int i = 0; i < N; ++i)
             if(!ST[i]->p || !EN[i]->p){
                 Node *tp = !ST[i]->p ? ST[i] : EN[i];
