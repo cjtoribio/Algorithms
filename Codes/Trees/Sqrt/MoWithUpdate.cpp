@@ -1,5 +1,5 @@
 template<class Holder, class Q, class O, class U>
-struct Moh {
+struct Mo {
     struct Query { int l, r, t, id; Q q; };
     struct Update { int l, r; U u; };
     int N;
