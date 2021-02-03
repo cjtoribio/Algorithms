@@ -62,15 +62,17 @@ vector<PII> intersections(vector<Line<Double>> lines) {
     glines = lines;
     int N = glines.size();
     LOWER = N + 0, UPPER = N + 1;
-    glines.push_back(Line(Point<Double>(0, -1e20), Point<Double>(1, 0), false)); // down
-    glines.push_back(Line(Point<Double>(0, +1e20), Point<Double>(1, 0), false)); // up
+    glines.push_back(Line(Point<Double>(0, -1e20), Point<Double>(1, 0), false)); // LOWER
+    glines.push_back(Line(Point<Double>(0, +1e20), Point<Double>(1, 0), false)); // UPPER
     cx = -1e20;
     cy = -1e20;
     struct Event {
         Point<Double> p; int lineId; int action; // (0 - add, 1 - touch, 2 - out)
         bool operator<(const Event e) const {
-            if ( (p - e.p).mag() < 1e-9 ) return tuple(action, lineId) < tuple(e.action, e.lineId);
-            return tuple(p.x, action, p.y, lineId) < tuple(e.p.x, e.action, e.p.y, e.lineId);
+            if (abs(p.x - e.p.x) > 1e-9) return p.x < e.p.x;
+            if (action != e.action) return action < e.action;
+            if (abs(p.y - e.p.y) > 1e-9) return p.y < e.p.y;
+            return lineId < e.lineId;
         }
     };
     struct cmp {
@@ -86,11 +88,11 @@ vector<PII> intersections(vector<Line<Double>> lines) {
         }
     };
     set<int, cmp> activeLines;
-    set<Event> PQ, VER;
+    set<Event> PQ;
     vector<set<int, cmp>::iterator> pointers(glines.size(), activeLines.end());
     for (int i = 0; i < N; ++i) {
         if (glines[i].a.x == glines[i].b().x) {
-            VER.insert((Event){min(glines[i].a, glines[i].b()), i, 2});
+            PQ.insert((Event) {min(glines[i].a, glines[i].b()), i, 2});
         } else {
             PQ.insert((Event) {min(glines[i].a, glines[i].b()), i, 0});
             PQ.insert((Event) {max(glines[i].a, glines[i].b()), i, 3});
@@ -129,8 +131,8 @@ vector<PII> intersections(vector<Line<Double>> lines) {
     };
     vector<pair<int,int>> I;
     set<int> PJ;
-    while (PQ.size() || VER.size()) {
-        auto e = VER.size() == 0 ? *PQ.begin() : (PQ.size() == 0 ? *VER.begin() : min(*VER.begin(), *PQ.begin()));
+    while (PQ.size()) {
+        auto e = *PQ.begin();
         cx = e.p.x;
         glines[N+0].a.x = glines[N+1].a.x = cx;
         cy = -1e20;
@@ -149,20 +151,21 @@ vector<PII> intersections(vector<Line<Double>> lines) {
             Point<Double> temp;
             for (int i = 0; i < TI.size(); ++i)
                 for (int j = i+1; j < TI.size(); ++j)
-                    if (intersectLines<EC::C, EC::C, EC::C, EC::C>(glines[TI[i]], glines[TI[j]], temp))
-                        I.push_back(make_pair(min(TI[i], TI[j]), max(TI[i], TI[j])));
+                    if (intersectLines<EC::C, EC::C, EC::C, EC::C>(glines[TI[i]], glines[TI[j]], temp)) {
+                        I.emplace_back(min(TI[i], TI[j]), max(TI[i], TI[j]));
+                    }
             for (auto v : TI) remLine(v, inter);
-            for (auto v : TI)
-                addLine(v, inter);
+            for (auto v : TI) addLine(v, inter);
         }
-        while (VER.size() && VER.begin()->p.x == e.p.x && VER.begin()->action == 2) {
-            auto rem = *VER.begin(); VER.erase(VER.begin());
+        while (PQ.size() && PQ.begin()->p.x == e.p.x && PQ.begin()->action == 2) {
+            auto rem = *PQ.begin(); PQ.erase(PQ.begin());
             glines[LOWER].a.y = glines[rem.lineId].a.y;
             glines[UPPER].a.y = glines[rem.lineId].b().y;
             auto l = activeLines.lower_bound(LOWER);
             auto r = activeLines.upper_bound(UPPER);
-            for (auto t = l; t != r; ++t)
+            for (auto t = l; t != r; ++t) {
                 I.emplace_back(min(*t, rem.lineId), max(*t, rem.lineId));
+            }
         }
         while (PQ.size() && PQ.begin()->p.x == e.p.x && PQ.begin()->action == 3) {
             auto rem = *PQ.begin(); PQ.erase(PQ.begin());
@@ -170,7 +173,6 @@ vector<PII> intersections(vector<Line<Double>> lines) {
         }
     }
     sort(I.begin(), I.end());
-    I.erase(unique(I.begin(), I.end()), I.end());
     return I;
 }
 
