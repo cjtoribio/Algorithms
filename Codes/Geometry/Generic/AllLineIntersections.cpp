@@ -48,17 +48,6 @@ bool intersectLines(Line<F1> lhs, Line<F2> rhs, Point<F3>& res) {
     return intersect;
 }
 
-template <class F1, class F2>
-bool parallelDist(Line<F1> lhs, Line<F2> rhs, int &type) {
-    auto s = lhs.ab ^ rhs.ab;
-    if (s != 0) return false;
-    if ((rhs.ab ^ (lhs.a - rhs.a)) != 0) return false;
-    if (rhs.ab * lhs.ab > 0) return type = ((rhs.a - lhs.a)*lhs.ab > 0 ? 1 : 2), true;
-    return type = 3, (rhs.a - lhs.a)*lhs.ab > 0;
-}
-
-
-
 vector<PII> intersections(vector<Line<Double>> lines) {
     static double cx, cy;
     static int LOWER, UPPER;
