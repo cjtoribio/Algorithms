@@ -10,7 +10,7 @@ struct Line {
     // careful with doubles
     bool aligned(Point<F> o)const{ return ((o - a)^(ab)) == 0; }
     bool contains(Point<F> o)const {
-        return min(a.x, b().x) <= o.x && o.x <= max(a.x, b().x);
+        return min(a.x, b().x) <= o.x && o.x <= max(a.x, b().x) && min(a.y, b().y) <= o.y && o.y <= max(a.y, b().y);
     }
     Point<F> eval(F x) {
         if (abs(ab.x) < 1e-9) return a;
@@ -31,7 +31,14 @@ bool check(EC t, F a, F b){
 template <EC LA, EC LB, EC RA, EC RB, class F1, class F2, class F3>
 bool intersectLines(Line<F1> lhs, Line<F2> rhs, Point<F3>& res) {
     auto s = lhs.ab ^ rhs.ab;
-    if (s == 0) return false;
+    if (s == 0) {
+        // just return false here if parallel lines dont intersect by definition
+        vector<Point<F1>> C = {rhs.a, rhs.b(), lhs.a, lhs.b()};
+        sort(C.begin(), C.end());
+        for (auto p : C) if (lhs.aligned(p) && lhs.contains(p) && rhs.aligned(p) && rhs.contains(p))
+            return res = p, true;
+        return false;
+    }
     auto ls = (rhs.a - lhs.a) ^ rhs.ab;
     auto rs = (rhs.a - lhs.a) ^ lhs.ab;
     if (s < 0) s = -s, ls = -ls, rs = -rs;
@@ -157,8 +164,13 @@ vector<PII> intersections(vector<Line<Double>> lines) {
             for (auto v : TI) remLine(v, inter);
             for (auto v : TI) addLine(v, inter);
         }
+        set<pair<Double, int>> endings;
         while (PQ.size() && PQ.begin()->p.x == e.p.x && PQ.begin()->action == 2) {
             auto rem = *PQ.begin(); PQ.erase(PQ.begin());
+            // this for matches all overlapping vertical lines
+            for (auto it = endings.lower_bound(make_pair(rem.p.y, -1)); it != endings.end(); ++it)
+                I.emplace_back(min(it->second, rem.lineId), max(it->second, rem.lineId));
+            endings.insert(make_pair(glines[rem.lineId].b().y, rem.lineId));
             glines[LOWER].a.y = glines[rem.lineId].a.y;
             glines[UPPER].a.y = glines[rem.lineId].b().y;
             auto l = activeLines.lower_bound(LOWER);
@@ -173,6 +185,7 @@ vector<PII> intersections(vector<Line<Double>> lines) {
         }
     }
     sort(I.begin(), I.end());
+    I.erase(unique(I.begin(), I.end()), I.end());
     return I;
 }
 
