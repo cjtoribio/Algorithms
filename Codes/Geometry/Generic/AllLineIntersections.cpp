@@ -1,30 +1,12 @@
-template <class F>
-struct Line {
-    Point<F> a, ab;
-    Line() : a(), ab() {}
-    Line(Point<F> a, Point<F> b, bool twoPoints = true)
-            : a(a), ab(twoPoints ? b - a : b) {}
-
-    Point<F> b() const { return a + ab; }
-    operator bool () const { return ab != Point<F>(); }
-    // careful with doubles
-    bool aligned(Point<F> o)const{ return ((o - a)^(ab)) == 0; }
-    bool contains(Point<F> o)const {
-        return min(a.x, b().x) <= o.x && o.x <= max(a.x, b().x) && min(a.y, b().y) <= o.y && o.y <= max(a.y, b().y);
-    }
-    Point<F> eval(F x) {
-        if (abs(ab.x) < 1e-9) return a;
-        return a + ab * (x - a.x) / ab.x;
-    }
-};
-
+#define EPS 1e-9
 enum EC { R, C, O }; // Ray, Closed, Open
 template<class F>
 bool check(EC t, F a, F b){
     if(t == EC::R) return true;
-    if(t == EC::C) return a <= b + 1e-9;
-    if(t == EC::O) return a < b - 1e-9;
+    if(t == EC::C) return a <= b + EPS;
+    if(t == EC::O) return a < b - EPS;
 }
+
 // res: is where the intersection is placed in case intersections exists
 // LA and LB are the endpoint types of A and B of the line 'lhs'
 // RA and RB are the endpoint types of A and B of the line 'lhs'
@@ -35,8 +17,9 @@ bool intersectLines(Line<F1> lhs, Line<F2> rhs, Point<F3>& res) {
         // just return false here if parallel lines dont intersect by definition
         vector<Point<F1>> C = {rhs.a, rhs.b(), lhs.a, lhs.b()};
         sort(C.begin(), C.end());
-        for (auto p : C) if (lhs.aligned(p) && lhs.contains(p) && rhs.aligned(p) && rhs.contains(p))
-            return res = p, true;
+        for (auto p : C)
+            if (lhs.aligned(p) && lhs.contains(p) && rhs.aligned(p) && rhs.contains(p))
+                return res = p, true;
         return false;
     }
     auto ls = (rhs.a - lhs.a) ^ rhs.ab;
@@ -48,43 +31,45 @@ bool intersectLines(Line<F1> lhs, Line<F2> rhs, Point<F3>& res) {
     return intersect;
 }
 
-vector<PII> intersections(vector<Line<Double>> lines) {
+template<typename F>
+vector<PII> intersections(vector<Line<F>> lines) {
     static double cx, cy;
     static int LOWER, UPPER;
-    static vector<Line<Double>> glines;
+    static vector<Line<F>> glines;
     for (auto &l : lines) l = Line(min(l.a, l.b()), max(l.a, l.b())); // normalize segments
     glines = lines;
     int N = glines.size();
     LOWER = N + 0, UPPER = N + 1;
-    glines.push_back(Line(Point<Double>(0, -1e20), Point<Double>(1, 0), false)); // LOWER
-    glines.push_back(Line(Point<Double>(0, +1e20), Point<Double>(1, 0), false)); // UPPER
+    glines.push_back(Line(Point<F>(0, 0), Point<F>(1, 0), false)); // LOWER
+    glines.push_back(Line(Point<F>(0, 0), Point<F>(1, 0), false)); // UPPER
     cx = -1e20;
     cy = -1e20;
     struct Event {
-        Point<Double> p; int lineId; int action; // (0 - add, 1 - touch, 2 - out)
-        Event(Point<Double> p, int lineId, int action) : p(p), lineId(lineId), action(action) {}
+        Point<F> p; int lineId; int action; // (0 - add, 1 - touch, 2 - out)
+        Event(Point<F> p, int lineId, int action) : p(p), lineId(lineId), action(action) {}
         bool operator<(const Event e) const {
-            if (abs(p.x - e.p.x) > 1e-9) return p.x < e.p.x;
+            if (abs(p.x - e.p.x) > EPS) return p.x < e.p.x;
             if (action != e.action) return action < e.action;
-            if (abs(p.y - e.p.y) > 1e-9) return p.y < e.p.y;
+            if (abs(p.y - e.p.y) > EPS) return p.y < e.p.y;
             return lineId < e.lineId;
         }
     };
     struct cmp {
         bool operator()(int a, int b) const {
-            Double ay = glines[a].eval(cx).y;
-            Double by = glines[b].eval(cx).y;
-            if (abs(ay - by) > 1e-9) return ay < by;
+            auto ay = eval(glines[a]).y;
+            auto by = eval(glines[b]).y;
+            if (abs(ay - by) > EPS) return ay < by;
             if (a == LOWER || b == LOWER) return a == LOWER;
             if (a == UPPER || b == UPPER) return b == UPPER;
-            if (abs(glines[a].ab^glines[b].ab) < 1e-9) return a < b;
-            if (cy < ay - 1e-9) return (glines[a].ab^glines[b].ab) < 1e-9;
-            return (glines[a].ab^glines[b].ab) > 1e-9;
+            if (abs(glines[a].ab^glines[b].ab) < EPS) return a < b;
+            if (cy < ay - EPS) return (glines[a].ab^glines[b].ab) < EPS;
+            return (glines[a].ab^glines[b].ab) > EPS;
         }
+        Point<F> eval(const Line<F> &l) const { return abs(l.ab.x) < 1e-9 ? l.a : l.a + l.ab * (cx - l.a.x) / l.ab.x; }
     };
     set<int, cmp> activeLines;
     set<Event> PQ;
-    vector<set<int, cmp>::iterator> pointers(glines.size(), activeLines.end());
+    vector<typename set<int, cmp>::iterator> pointers(glines.size(), activeLines.end());
     for (int i = 0; i < N; ++i) {
         if (glines[i].a.x == glines[i].b().x) {
             PQ.emplace(min(glines[i].a, glines[i].b()), i, 2);
@@ -96,7 +81,7 @@ vector<PII> intersections(vector<Line<Double>> lines) {
     auto addLine = [&](int lineId, Event e) {
         auto it = pointers[lineId] = activeLines.insert(lineId).first;
         if (activeLines.begin() != it) {
-            Point<Double> inter;
+            Point<F> inter;
             if (intersectLines<EC::C,EC::C,EC::C,EC::C>(glines[*prev(it)], glines[lineId], inter)) {
                 if (e < Event(inter, -1, 1)) {
                     PQ.emplace(inter, -1, 1);
@@ -104,7 +89,7 @@ vector<PII> intersections(vector<Line<Double>> lines) {
             }
         }
         if (next(it) != activeLines.end()) {
-            Point<Double> inter;
+            Point<F> inter;
             if (intersectLines<EC::C,EC::C,EC::C,EC::C>(glines[lineId], glines[*next(it)], inter)) {
                 if (e < Event(inter, -1, 1)) {
                     PQ.emplace(inter, -1, 1);
@@ -116,7 +101,7 @@ vector<PII> intersections(vector<Line<Double>> lines) {
         auto ne = activeLines.erase(pointers[lineId]);
         pointers[lineId] = activeLines.end();
         if (ne != activeLines.end() && ne != activeLines.begin()) {
-            Point<Double> inter;
+            Point<F> inter;
             if (intersectLines<EC::C,EC::C,EC::C,EC::C>(glines[*ne], glines[*prev(ne)], inter)) {
                 if (e < Event(inter, -1, 1)) {
                     PQ.emplace(inter, -1, 1);
@@ -142,15 +127,15 @@ vector<PII> intersections(vector<Line<Double>> lines) {
             cy = inter.p.y;
             for (auto v : TI) remLine(v, inter);
             for (auto v : TI) addLine(v, inter);
-            Point<Double> out;
+            Point<F> out;
             for (int i = 0; i < TI.size(); ++i)
                 for (int j = i+1; j < TI.size(); ++j)
                     if (intersectLines<EC::C, EC::C, EC::C, EC::C>(glines[TI[i]], glines[TI[j]], out)) {
-                        if (out.sqdist(inter.p) < 1e-9)
+                        if (out.sqdist(inter.p) < EPS)
                             I.emplace_back(min(TI[i], TI[j]), max(TI[i], TI[j]));
                     }
         }
-        set<pair<Double, int>> endings;
+        set<pair<F, int>> endings;
         while (PQ.size() && PQ.begin()->p.x == e.p.x && PQ.begin()->action == 2) {
             auto rem = *PQ.begin(); PQ.erase(PQ.begin());
             // this for matches all overlapping vertical lines
@@ -171,11 +156,12 @@ vector<PII> intersections(vector<Line<Double>> lines) {
     return I;
 }
 
-vector<PII> bruteForce(vector<Line<Double>> L) {
+template<class F>
+vector<PII> bruteForce(vector<Line<F>> L) {
     vector<PII> I;
     for (int i = 0; i < L.size(); ++i) {
         for (int j = i+1; j < L.size(); ++j) {
-            Point<Double> tem;
+            Point<F> tem;
             if (intersectLines<EC::C, EC::C, EC::C, EC::C>(L[i], L[j], tem)) {
                 I.push_back(PII(i, j));
             }
