@@ -1,0 +1,26 @@
+struct FEDisjointSet {
+    VI P, E;
+    FEDisjointSet(int N) : P(N, -1), E(N, -1) { }
+    int find(int x) {
+        return P[x] < 0 ? x : find(P[x]);
+    }
+    bool joinFriend(int x, int y) {
+        x = find(x); y = find(y);
+        if (x == y) return true;
+        if (P[y] < P[x]) swap(x, y);
+        P[x] += P[y];
+        P[y] = x;
+        if (E[x] != -1 && E[y] != -1) joinFriend(E[x], E[y]);
+        if (E[y] != -1) E[x] = find(E[x]);
+        return true;
+    }
+    bool joinEnemy(int x, int y) {
+        x = find(x); y = find(y);
+        if (x == y) return false;
+        if (E[x] != -1) joinFriend(E[x], y); // my enemy is the friend of my enemy
+        if (E[y] != -1) joinFriend(E[y], x); // the enemy of my enemy is my friend
+        E[x] = find(y);
+        E[y] = find(x);
+        return true;
+    }
+};
