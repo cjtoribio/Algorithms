@@ -31,5 +31,8 @@ struct ModInt {
         m.n = n;
         return m;
     }
+    friend ostream &operator<<(ostream& o, const ModInt<MOD> &m) {
+        return o << m.n;
+    }
 };
 typedef ModInt<1000000007> mint;
