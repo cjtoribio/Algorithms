@@ -1,23 +1,34 @@
-template<class T, class U>
+template<class T>
+struct MaxTrimmer {
+    inline const T& multiply(const T &m, int sz) const { return m; }
+    inline const T& trim(const T &m, int sz) const { return m; }
+};
+template<class T, class U, class TR = MaxTrimmer<U>>
 struct SegmentTree {
     T *V;
     U *D;
+    int *SZ;
     bool *L;
     int N, H;
-    SegmentTree(int N) : V(new T[2*N]), D(new U[N]), L(new bool[N]), N(N), H(sizeof(int) * 8 - __builtin_clz(N)) {
+    TR tr;
+    SegmentTree(int N) : V(new T[2*N]), D(new U[N]), L(new bool[N]), SZ(new int[2*N]), N(N), H(sizeof(int) * 8 - __builtin_clz(N)) {
         memset(L, 0, sizeof(bool) * N);
-        for (int i = 0; i < N; ++i) D[i] = U();
+        for (int i = N-1; i > 0; --i) D[i] = U();
+        for (int i = 2*N-1; i > 0; --i) SZ[i] = i < N ? SZ[i<<1] + SZ[i<<1|1] : 1;
     }
+//    SegmentTree(int N) : V(get_mem<T>(2*N)), D(get_mem<U>(N)), L(get_mem<bool>(N)), N(N), H(sizeof(int) * 8 - __builtin_clz(N)) {
+//        memset(L, 0, sizeof(bool) * N);
+//    }
     ~SegmentTree() { delete[] V; delete[] L; delete[] D; }
     inline void apply(int p, const U &value) {
-        V[p] = V[p] + value;
-        if (p < N) D[p] += value, L[p] = true;
+        if (p < N) V[p] += tr.multiply(value, SZ[p]), D[p] += value, L[p] = true;
+        else V[p] += value;
     }
     inline void build(int p) {
         while (p > 1) p >>= 1, V[p] = V[p<<1] + V[p<<1|1];
     }
     inline void pushToChildren(int i) {
-        if (i < N && L[i]) apply(i<<1, D[i]), apply(i<<1|1, D[i]), D[i] = U(), L[i] = false;
+        if (i < N && L[i]) apply(i<<1, D[i]), apply(i<<1|1, tr.trim(D[i], SZ[i])), D[i] = U(), L[i] = false;
     }
     inline void push(int p) {
         for (int s = H; s > 0; --s) pushToChildren(p >> s);
@@ -87,4 +98,5 @@ struct SegmentTree {
     }
 };
 
-// SegmentTree<int,int> would do range sum and point update.
+template<class U>
+struct SumTrimmer : MaxTrimmer<U> { const U& multiply(const U& u, int sz) { return u * sz; } };
