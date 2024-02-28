@@ -24,3 +24,8 @@ vector<int> manachers(const string &A) {
     }
     return P;
 }
+
+// get palindrom range when passed a Manacher index.
+PII palinRange(const VI &MAN, int i) {
+    return PII(i / 2 - MAN[i] / 2, i / 2 + MAN[i] / 2 - (i%2 == 0));
+};
